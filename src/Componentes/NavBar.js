@@ -1,6 +1,8 @@
 // NavBar.js
 import React from 'react';
+//desgin del componente
 import '../CSS/NavBar.css';
+//importaciones para la navegacion mediante el router
 import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -12,8 +14,8 @@ const NavBar = () => {
           <li className="nav-item"><Link to="/">Inicio</Link></li>
           <li className="nav-item"><Link to="/mision">Misión</Link></li>
           <li className="nav-item"><Link to="/vision">Visión</Link></li>
-          <li className="nav-item"><a href="/acercade">Acerca de...</a></li>
-          <li className="nav-item"><a href="/registro">Registro</a></li>
+          <li className="nav-item"><Link to="/acercade">Acerca de...</Link></li>
+          <li className="nav-item"><Link to="/registro">Registro</Link></li>
         </ul>
       </nav>
       <Outlet/>

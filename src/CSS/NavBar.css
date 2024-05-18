@@ -1,28 +1,30 @@
+
+/* DESING DE LA BARRA DE NAVEGACION */
 .navbar {
   background-color: #333;
   overflow: hidden;
 }
-
+/* CONTENEDOR DE LOS BOTONES */
 .nav-list {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 5;
   display: flex;
   justify-content: space-around;
 }
 
+/*DESGIN DE LOS BOTONES DE LA BARRA DE NAVEGACION*/
 .nav-item {
   display: inline;
 }
-
 .nav-item a {
   display: block;
   color: white;
   text-align: center;
   padding: 14px 16px;
+  margin: 5px;
   text-decoration: none;
 }
-
 .nav-item a:hover {
   background-color: #ddd;
   color: black;
