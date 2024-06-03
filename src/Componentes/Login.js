@@ -1,7 +1,19 @@
-import React from 'react'
-import '../CSS/Login.css'
+import React from 'react';
+import '../CSS/Login.css';
 
-export default function Login() {
+const Login = ({ handleLogin }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Lógica para verificar credenciales
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    if (email === 'yolo@gmail.com' && password === 'asdasd123123') {
+      handleLogin(); // Llama a handleLogin si las credenciales son válidas
+    } else {
+      alert('Correo electrónico o contraseña incorrectos');
+    }
+  };
+
   return (
     <div>
       <div className="container mt-5">
@@ -10,7 +22,7 @@ export default function Login() {
             <div className="card">
               <div className="card-body">
                 <h3 className="card-title text-center">Iniciar Sesión</h3>
-                <form>
+                <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Correo Electrónico</label>
                     <input type="email" className="form-control" id="email" placeholder="Ingresa tu correo electrónico" />
@@ -27,5 +39,7 @@ export default function Login() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default Login;

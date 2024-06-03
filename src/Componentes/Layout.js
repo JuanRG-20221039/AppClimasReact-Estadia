@@ -1,32 +1,45 @@
-// Inicio.js
-import React from 'react'
-import NavBar from './NavBar'
-import { Routes, Route } from 'react-router-dom';
-
-//importeaciones de los documentos para navegar mediante el router
-import Login from './Login'
-import Mision from './Mision'
-import Vision from './Vision'
+import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import NavBar from './NavBar';
+import MenuLogin from './MenuLogin'; // Importa el componente MenuLogin
+import Login from './Login';
+import Mision from './Mision';
+import Vision from './Vision';
 import Acercade from './Acercade';
 import Registro from './Registro';
 
-//funcion para el router
 const Inicio = () => {
+  const [loggedIn, setLoggedIn] = useState(false); // Estado para verificar si el usuario ha iniciado sesión
+
+  const handleLogin = () => {
+    // Esta función se llamará cuando el usuario inicie sesión correctamente
+    setLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    // Esta función se llamará cuando el usuario cierre sesión
+    setLoggedIn(false);
+  };
+
   return (
     <div>
-      {/* se importa la barra de navegacion, lo unico que hace es la accion mediante la url */}
-      <NavBar/>
-      {/* Este es el router, manda el complemento a la url y llama al documento
-      ya previamente importado para renderizarlo */}
+      {/* Se pasa el estado loggedIn y la función handleLogout al componente NavBar */}
+      <NavBar loggedIn={loggedIn} handleLogout={handleLogout} />
+      {/* Este es el router, manda el componente a la URL y renderiza el componente correspondiente */}
       <Routes>
-        <Route path="/" element={<Login/>}></Route>
-        <Route path="/mision" element={<Mision/>}></Route>
-        <Route path="/vision" element={<Vision/>}></Route>
-        <Route path="/acercade" element={<Acercade/>}></Route>
-        <Route path="/registro" element={<Registro/>}></Route>
+        <Route path="/" element={loggedIn ? <Navigate to="/menu" /> : <Login handleLogin={handleLogin} />} />
+        <Route path="/mision" element={<Mision />} />
+        <Route path="/vision" element={<Vision />} />
+        <Route path="/acercade" element={<Acercade />} />
+        <Route path="/registro" element={<Registro />} />
+        {loggedIn ? (
+          <Route path="/menu" element={<MenuLogin />} />
+        ) : (
+          <Route path="*" element={<Navigate to="/" />} />
+        )}
       </Routes>
     </div>
-  )
-}
+  );
+};
 
 export default Inicio;
