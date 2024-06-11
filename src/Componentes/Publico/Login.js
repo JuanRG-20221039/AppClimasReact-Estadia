@@ -1,5 +1,4 @@
 import React from 'react';
-import '../CSS/Login.css';
 
 const Login = ({ handleLogin }) => {
   const handleSubmit = (e) => {
@@ -7,8 +6,12 @@ const Login = ({ handleLogin }) => {
     // Lógica para verificar credenciales
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+
+    // Simulación de credenciales con rol de usuario
     if (email === 'yolo@gmail.com' && password === 'asdasd123123') {
-      handleLogin(); // Llama a handleLogin si las credenciales son válidas
+      handleLogin('user'); // Usuario normal
+    } else if (email === 'juan.rodriguezgde@gmail.com' && password === 'asdasd123') {
+      handleLogin('admin'); // Administrador
     } else {
       alert('Correo electrónico o contraseña incorrectos');
     }

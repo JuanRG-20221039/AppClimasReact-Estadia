@@ -4,7 +4,7 @@ import React from 'react'
 export default function MenuLogin() {
   return (
     <div>
-      <h1>Holaaa</h1>
+      <h1>Panel de inicio de usuario</h1>
     </div>
   )
 }

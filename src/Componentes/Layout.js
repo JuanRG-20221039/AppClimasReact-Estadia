@@ -1,42 +1,53 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import NavBar from './NavBar';
-import MenuLogin from './MenuLogin'; // Importa el componente MenuLogin
-import Login from './Login';
-import Mision from './Mision';
-import Vision from './Vision';
-import Acercade from './Acercade';
-import Registro from './Registro';
+import MenuLoginUser from './User/MenuLoginUser';
+import Login from './Publico/Login';
+import Mision from './Publico/Mision';
+import Vision from './Publico/Vision';
+import Acercade from './Publico/Acercade';
+import Registro from './Publico/Registro';
+import PerfilUser from './User/PerfilUser';
+import ConfiguracionUser from './User/ConfiguracionUser';
+import MenuLoginAdmin from './Admin/MenuLoginAdmin'; // Importa MenuLoginAdmin
 
 const Inicio = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para verificar si el usuario ha iniciado sesión
+  const [role, setRole] = useState(''); // Estado para el rol del usuario
 
-  const handleLogin = () => {
+  const handleLogin = (userRole) => {
     // Esta función se llamará cuando el usuario inicie sesión correctamente
     setLoggedIn(true);
+    setRole(userRole); // Establece el rol del usuario
   };
 
   const handleLogout = () => {
     // Esta función se llamará cuando el usuario cierre sesión
     setLoggedIn(false);
+    setRole(''); // Resetea el rol del usuario
   };
 
   return (
     <div>
-      {/* Se pasa el estado loggedIn y la función handleLogout al componente NavBar */}
-      <NavBar loggedIn={loggedIn} handleLogout={handleLogout} />
-      {/* Este es el router, manda el componente a la URL y renderiza el componente correspondiente */}
+      <NavBar loggedIn={loggedIn} role={role} handleLogout={handleLogout} />
       <Routes>
-        <Route path="/" element={loggedIn ? <Navigate to="/menu" /> : <Login handleLogin={handleLogin} />} />
+        {/* VISTA PRINCIPAL DEPENDIENDO EL ROL QUE INGRESO */}
+        <Route path="/" element={loggedIn ? <Navigate to={role === 'admin' ? "/menuAdmin" : "/menu"} /> : <Login handleLogin={handleLogin} />} />
         <Route path="/mision" element={<Mision />} />
         <Route path="/vision" element={<Vision />} />
         <Route path="/acercade" element={<Acercade />} />
         <Route path="/registro" element={<Registro />} />
-        {loggedIn ? (
-          <Route path="/menu" element={<MenuLogin />} />
-        ) : (
-          <Route path="*" element={<Navigate to="/" />} />
+        {loggedIn && (
+          <>
+            <Route path="/menu" element={<MenuLoginUser />} />
+            <Route path="/perfil" element={<PerfilUser />} />
+            <Route path="/configuracion" element={<ConfiguracionUser />} />
+            {/* RUTAS PARA ADMINISTRADOR */}
+            {role === 'admin' && <Route path="/menuAdmin/*" element={<MenuLoginAdmin />} />} {/* Utiliza MenuLoginAdmin */}
+          </>
         )}
+        {/* RUTA DE FALLA PARA CUALQUIER OTRA RUTA */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );
