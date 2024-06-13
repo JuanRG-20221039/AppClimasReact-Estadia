@@ -9,6 +9,7 @@
   padding: 20px;
   height: 100vh; /* Asegura que la barra lateral ocupe toda la altura de la ventana */
   position: fixed; /* Hace que la barra lateral sea fija */
+  overflow-y: auto; /* Añade desplazamiento vertical cuando sea necesario */
 }
 
 .sidebar nav ul {
@@ -40,6 +41,6 @@
   flex-grow: 1;
 }
 
-.content section {
-  margin-bottom: 40px;
+.ulMargen{
+margin-bottom: 100px;
 }

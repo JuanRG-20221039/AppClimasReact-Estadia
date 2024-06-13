@@ -84,7 +84,6 @@ export default function Aulas() {
         alert('El aula ya existe en el edificio seleccionado.');
         return;
       }
-  
       // Si el aula no existe, guardar los cambios
       await axios.put(`http://localhost:8000/aulas/${currentAula.Id_aula}`, currentAula);
       setAulas(aulas.map(aula => (aula.Id_aula === currentAula.Id_aula ? currentAula : aula)));
@@ -102,7 +101,6 @@ export default function Aulas() {
         alert('El aula ya existe en el edificio seleccionado.');
         return;
       }
-  
       // Crear el aula si no existe
       const responseCreate = await axios.post(`http://localhost:8000/aulas`, newAula);
       setAulas([...aulas, responseCreate.data]);
@@ -123,7 +121,7 @@ export default function Aulas() {
     <div>
       <h2>Aulas</h2>
       <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-        Crear Aula
+        Crear Nueva Aula
       </Button>
       <table className="table">
         <thead>
