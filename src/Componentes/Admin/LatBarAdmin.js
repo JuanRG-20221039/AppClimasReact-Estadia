@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import '../../CSS/MenuLoginAdmin.css'; // Importa el archivo CSS para los estilos
+import '../../CSS/MenuLoginAdmin.css';
 
 const LatBarAdmin = () => {
   return (
@@ -11,6 +11,7 @@ const LatBarAdmin = () => {
           <li><NavLink to="admin-aulas" activeClassName="active">Administrar Aulas</NavLink></li>
           <li><NavLink to="admin-marcas" activeClassName="active">Administrar Marcas</NavLink></li>
           <li><NavLink to="admin-modulos-iot" activeClassName="active">Administrar Modulos IOT</NavLink></li>
+          <li><NavLink to="admin-vinculacion-iot" activeClassName="active">Vincular Modulos IOT</NavLink></li>
           <li><NavLink to="admin-climas" activeClassName="active">Administrar Climas</NavLink></li>
           <li><NavLink to="admin-bitacora" activeClassName="active">Bitácora</NavLink></li>
           <li><NavLink to="admin-reportes" activeClassName="active">Reportes</NavLink></li>

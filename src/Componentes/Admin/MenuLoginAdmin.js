@@ -12,6 +12,7 @@ import Reportes from './ComponentesMenuAdmin/Reportes';
 import Historial from './ComponentesMenuAdmin/Historial';
 import Marcas from './ComponentesMenuAdmin/Marcas.js';
 import ModulosIOT from './ComponentesMenuAdmin/ModulosIOT.js';
+import VinculacionIOT from './ComponentesMenuAdmin/VinculacionIOT.js';
 
 const MenuLoginAdmin = () => {
   return (
@@ -23,6 +24,7 @@ const MenuLoginAdmin = () => {
           <Route path="admin-aulas" element={<Aulas />} />
           <Route path="admin-marcas" element={<Marcas />} />
           <Route path="admin-modulos-iot" element={<ModulosIOT />} />
+          <Route path="admin-vinculacion-iot" element={<VinculacionIOT />} />
           <Route path="admin-climas" element={<Climas />} />
           <Route path="admin-bitacora" element={<Bitacora />} />
           <Route path="admin-reportes" element={<Reportes />} />
