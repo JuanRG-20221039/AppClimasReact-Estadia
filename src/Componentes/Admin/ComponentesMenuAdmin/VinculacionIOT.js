@@ -10,15 +10,15 @@ export default function VinculacionIOT() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [vinculacionToDelete, setVinculacionToDelete] = useState(null);
+  const [macs, setMacs] = useState({});
 
   useEffect(() => {
     const fetchPlacas = async () => {
       try {
         const responsePlacas = await axios.get('http://localhost:8000/iot');
         const responseVinculaciones = await axios.get('http://localhost:8000/vinculacion');
-        
+
         const placasDisponibles = responsePlacas.data.filter(placa => {
-          // Filtrar solo las placas que no están vinculadas como principal o secundaria
           return !responseVinculaciones.data.some(vinculacion => {
             return vinculacion.Id_placa_principal === placa.Id_iot || vinculacion.Id_Placa_secundaria === placa.Id_iot;
           });
@@ -26,6 +26,27 @@ export default function VinculacionIOT() {
 
         setPlacasDisponibles(placasDisponibles);
         setVinculaciones(responseVinculaciones.data);
+
+        const macPromises = responseVinculaciones.data.map(async (vinculacion) => {
+          const macPrincipal = await axios.get(`http://localhost:8000/iot/mac_id/${vinculacion.Id_placa_principal}`);
+          const macSecundaria = await axios.get(`http://localhost:8000/iot/mac_id/${vinculacion.Id_Placa_secundaria}`);
+          return {
+            Id_vinculacion_iot: vinculacion.Id_vinculacion_iot,
+            Mac_principal: macPrincipal.data.Mac_dispositivo,
+            Mac_secundaria: macSecundaria.data.Mac_dispositivo
+          };
+        });
+
+        const macResults = await Promise.all(macPromises);
+        const macsMap = macResults.reduce((acc, curr) => {
+          acc[curr.Id_vinculacion_iot] = {
+            Mac_principal: curr.Mac_principal,
+            Mac_secundaria: curr.Mac_secundaria
+          };
+          return acc;
+        }, {});
+        
+        setMacs(macsMap);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -64,10 +85,9 @@ export default function VinculacionIOT() {
   const handlePlacaPrincipalChange = (event) => {
     const selectedPlaca = event.target.value;
     setPlacaPrincipal(selectedPlaca);
-    // Filtrar las placas disponibles para la secundaria excluyendo la placa principal seleccionada
     const filteredPlacas = placasDisponibles.filter(placa => placa.Id_iot !== parseInt(selectedPlaca));
     setPlacasDisponibles(filteredPlacas);
-    setPlacaSecundaria(''); // Reiniciar la selección de la placa secundaria
+    setPlacaSecundaria('');
   };
 
   const handlePlacaSecundariaChange = (event) => {
@@ -88,8 +108,33 @@ export default function VinculacionIOT() {
   const handleConfirmDelete = async () => {
     if (vinculacionToDelete) {
       try {
+        // Verificar si hay climas asociados a esta vinculación
+        const responseClimas = await axios.get(`http://localhost:8000/climas/vinculacion/${vinculacionToDelete}`);
+  
+        // Si hay climas asociados, mostrar alerta y no eliminar
+        if (responseClimas.status === 200) {
+          alert('No se puede eliminar esta vinculación porque hay climas asociados.');
+          return;
+        }
+      } catch (error) {
+        // Si el error es 404, ignorarlo y proceder con la eliminación
+        if (error.response && error.response.status === 404) {
+          console.log('No hay climas asociados, procediendo con la eliminación.');
+        } else {
+          console.error('Error al verificar climas asociados:', error);
+          alert('Ocurrió un error al verificar climas asociados. Inténtelo de nuevo más tarde.');
+          return;
+        }
+      }
+  
+      // Si no hay climas asociados o se ignoró el error 404, proceder con la eliminación
+      try {
+        // Eliminar historial del IoT asociado a la vinculación
+        await axios.delete(`http://localhost:8000/historico/eliminar/${vinculacionToDelete}`);
+  
+        // Eliminar la vinculación
         await axios.delete(`http://localhost:8000/vinculacion/${vinculacionToDelete}`);
-        setVinculaciones(vinculaciones.filter(vinculacion => vinculacion.Id_vinculacion !== vinculacionToDelete));
+        setVinculaciones(vinculaciones.filter(vinculacion => vinculacion.Id_vinculacion_iot !== vinculacionToDelete));
         console.log('Vinculación eliminada correctamente.');
       } catch (error) {
         console.error('Error deleting vinculacion:', error);
@@ -97,31 +142,31 @@ export default function VinculacionIOT() {
       }
     }
     handleCloseDeleteModal();
-  };
+  };  
 
   return (
     <div>
-      <h2>Vinculaciones IOT</h2>
+      <h2>Vinculacion de Modulos</h2>
       <Button variant="success" onClick={handleCrearVinculacion} style={{ marginBottom: '20px' }}>
         Crear Vinculación
       </Button>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID de Vinculación</th>
-            <th>Placa Principal</th>
-            <th>Placa Secundaria</th>
+            <th>Numero de Vinculación</th>
+            <th>Modulo Principal (MAC)</th>
+            <th>Modulo Secundario (MAC)</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {vinculaciones.map(vinculacion => (
-            <tr key={vinculacion.Id_vinculacion}>
-              <td>{vinculacion.Id_vinculacion}</td>
-              <td>{vinculacion.Id_placa_principal}</td>
-              <td>{vinculacion.Id_Placa_secundaria}</td>
+            <tr key={vinculacion.Id_vinculacion_iot}>
+              <td>{vinculacion.Id_vinculacion_iot}</td>
+              <td>{macs[vinculacion.Id_vinculacion_iot]?.Mac_principal}</td>
+              <td>{macs[vinculacion.Id_vinculacion_iot]?.Mac_secundaria}</td>
               <td>
-                <Button variant="danger" onClick={() => handleShowDeleteModal(vinculacion.Id_vinculacion)}>
+                <Button variant="danger" onClick={() => handleShowDeleteModal(vinculacion.Id_vinculacion_iot)}>
                   Eliminar Vinculación
                 </Button>
               </td>
@@ -130,13 +175,14 @@ export default function VinculacionIOT() {
         </tbody>
       </Table>
 
-      {/* Modal para eliminar vinculación */}
       <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Eliminación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea eliminar esta vinculación?
+          ¿Está seguro de que desea eliminar esta vinculación? <br></br>
+          <hr/>
+          Esta accion tambien eliminara todos los registros del historial...
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>
@@ -148,16 +194,15 @@ export default function VinculacionIOT() {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal para crear vinculación */}
       <Modal show={showCreateModal} onHide={handleCloseCreateModal}>
         <Modal.Header closeButton>
           <Modal.Title>Crear Vinculación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <h6>La Placa "Principal" sera el modulo que tendra conexión directa con el aire acondicionado</h6>
-        <hr/>
-        <h6>La Placa "Secundaria" sera el modulo que estara ubicado en una zona distinta dentro de la misma área</h6>
-        <hr/>
+          <h6>La Placa "Principal" sera el modulo que tendra conexión directa con el aire acondicionado</h6>
+          <hr />
+          <h6>La Placa "Secundaria" sera el modulo que estara ubicado en una zona distinta dentro de la misma área</h6>
+          <hr />
           <Form>
             <Form.Group controlId="selectPlacaPrincipal">
               <Form.Label>Placa Principal</Form.Label>
@@ -209,7 +254,7 @@ export default function VinculacionIOT() {
             Crear Vinculación
           </Button>
         </Modal.Footer>
-      </Modal>;
+      </Modal>
     </div>
   );
 }
