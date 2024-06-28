@@ -33,6 +33,9 @@ export default function Ubicaciones() {
     };
 
     fetchData();
+
+    const intervalId = setInterval(fetchData, 1000); // Actualiza cada 1 segundo
+    return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonta
   }, []);
 
   const handleShowCrearUbicacionModal = () => setShowCrearUbicacionModal(true);
@@ -92,6 +95,9 @@ export default function Ubicaciones() {
     return clima ? clima.Modelo : '';
   };
 
+  const aulasSinClima = aulas.filter(aula => !ubicaciones.some(ubicacion => ubicacion.Id_aula === aula.Id_aula));
+  const climasDisponibles = climas.filter(clima => !ubicaciones.some(ubicacion => ubicacion.Id_clima === clima.Id_clima));
+
   return (
     <div>
       <h2>Ubicaciones</h2>
@@ -129,7 +135,7 @@ export default function Ubicaciones() {
             <Form.Label>Seleccionar Clima</Form.Label>
             <Form.Control as="select" onChange={(e) => setSelectedClima(e.target.value)} value={selectedClima}>
               <option value="">Seleccione un clima...</option>
-              {climas.map(clima => (
+              {climasDisponibles.map(clima => (
                 <option key={clima.Id_clima} value={clima.Id_clima}>{clima.Modelo}</option>
               ))}
             </Form.Control>
@@ -138,7 +144,7 @@ export default function Ubicaciones() {
             <Form.Label>Seleccionar Aula</Form.Label>
             <Form.Control as="select" onChange={(e) => setSelectedAula(e.target.value)} value={selectedAula}>
               <option value="">Seleccione un aula...</option>
-              {aulas.map(aula => (
+              {aulasSinClima.map(aula => (
                 <option key={aula.Id_aula} value={aula.Id_aula}>
                   {`${edificios.find(e => e.Id_edificio === aula.Id_edificio)?.Nombre_edificio || ''} ${aula.Nombre_aula}`}
                 </option>

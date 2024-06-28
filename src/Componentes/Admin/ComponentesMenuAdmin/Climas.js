@@ -200,7 +200,7 @@ export default function Climas() {
       <table className="table">
         <thead>
           <tr>
-            <th>Registro</th>
+            <th>No. Registro</th>
             <th>Modelo</th>
             <th>Marca</th>
             <th>Capacidad</th>
