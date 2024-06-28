@@ -13,12 +13,13 @@ import Historial from './ComponentesMenuAdmin/Historial';
 import Marcas from './ComponentesMenuAdmin/Marcas.js';
 import ModulosIOT from './ComponentesMenuAdmin/ModulosIOT.js';
 import VinculacionIOT from './ComponentesMenuAdmin/VinculacionIOT.js';
+import Ubicaciones from './ComponentesMenuAdmin/Ubicaciones.js';
 
 const MenuLoginAdmin = () => {
   return (
     <div className="admin-container">
       <LatBarAdmin />
-      <main className="content">
+      <main className="content"> {/* Aquí aplicamos el estilo para el scroll */}
         <Routes>
           <Route path="admin-edificios" element={<Edificios />} />
           <Route path="admin-aulas" element={<Aulas />} />
@@ -26,6 +27,7 @@ const MenuLoginAdmin = () => {
           <Route path="admin-modulos-iot" element={<ModulosIOT />} />
           <Route path="admin-vinculacion-iot" element={<VinculacionIOT />} />
           <Route path="admin-climas" element={<Climas />} />
+          <Route path="admin-climas-ubicaciones" element={<Ubicaciones />} />
           <Route path="admin-bitacora" element={<Bitacora />} />
           <Route path="admin-reportes" element={<Reportes />} />
           <Route path="admin-historial" element={<Historial />} />

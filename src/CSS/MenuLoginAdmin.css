@@ -4,7 +4,7 @@
 
 .sidebar {
   width: 250px;
-  background-color: #2c3e50;
+  background-color: #25425f;
   color: #ecf0f1;
   padding: 20px;
   height: 100vh; /* Asegura que la barra lateral ocupe toda la altura de la ventana */
@@ -32,13 +32,18 @@
 
 .sidebar nav ul li a:hover,
 .sidebar nav ul li a.active {
-  background-color: #34495e;
+  background-color: #3c6288;
 }
 
 .content {
   margin-left: 250px; /* Añade un margen para no superponer el contenido con la barra lateral */
   padding: 20px;
   flex-grow: 1;
+}
+
+.content {
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+  max-height: calc(100vh - 100px); /* Establece una altura máxima, ajusta según sea necesario */
 }
 
 .ulMargen{

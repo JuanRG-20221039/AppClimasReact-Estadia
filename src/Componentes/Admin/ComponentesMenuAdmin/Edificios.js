@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
-import '../../../CSS/MenuAdminCSS/Edificios.css';
 
 export default function Edificios() {
   const [edificios, setEdificios] = useState([]);

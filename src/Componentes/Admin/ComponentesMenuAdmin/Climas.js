@@ -200,6 +200,7 @@ export default function Climas() {
       <table className="table">
         <thead>
           <tr>
+            <th>Registro</th>
             <th>Modelo</th>
             <th>Marca</th>
             <th>Capacidad</th>
@@ -212,6 +213,7 @@ export default function Climas() {
         <tbody>
           {climas.map(clima => (
             <tr key={clima.Id_clima}>
+              <td>{clima.Id_clima}</td>
               <td>{clima.Modelo}</td>
               <td>{clima.Nombre_marca}</td>
               <td>{clima.Capacidad}kg</td>
@@ -266,7 +268,7 @@ export default function Climas() {
             <Form.Control type="number" placeholder="Ingrese la capacidad en kg" value={capacidad} onChange={(e) => setCapacidad(e.target.value)} />
           </Form.Group>
           <Form.Group controlId="formVoltaje">
-            <Form.Label>Voltaje</Form.Label>
+            <Form.Label>Voltaje (v)</Form.Label>
             <Form.Control type="number" placeholder="Ingrese el voltaje" value={voltaje} onChange={(e) => setVoltaje(e.target.value)} />
           </Form.Group>
           <Form.Group controlId="formFechaIngreso">
@@ -319,7 +321,7 @@ export default function Climas() {
             <Form.Control type="number" placeholder="Ingrese la capacidad en kg" value={capacidad} onChange={(e) => setCapacidad(e.target.value)} />
           </Form.Group>
           <Form.Group controlId="formVoltajeEdit">
-            <Form.Label>Voltaje</Form.Label>
+            <Form.Label>Voltaje (v)</Form.Label>
             <Form.Control type="number" placeholder="Ingrese el voltaje" value={voltaje} onChange={(e) => setVoltaje(e.target.value)} />
           </Form.Group>
           <Form.Group controlId="formFechaIngresoEdit">

@@ -1,19 +1,44 @@
 import React from 'react';
+import axios from 'axios';
+import md5 from 'md5';
 
 const Login = ({ handleLogin }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Lógica para verificar credenciales
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = md5(document.getElementById('password').value); // Encriptar la contraseña con MD5
 
-    // Simulación de credenciales con rol de usuario
-    if (email === 'yolo@gmail.com' && password === 'asdasd123123') {
-      handleLogin('user'); // Usuario normal
-    } else if (email === 'juan.rodriguezgde@gmail.com' && password === 'asdasd123') {
-      handleLogin('admin'); // Administrador
-    } else {
-      alert('Correo electrónico o contraseña incorrectos');
+    try {
+      // Intentar iniciar sesión
+      const loginResponse = await axios.post('http://localhost:8000/trabajadores/loginCorreo', {
+        Correo: email,
+        Contraseña: password,
+      });
+
+      if (loginResponse.status === 200) {
+        // Si la autenticación es exitosa, obtener los detalles del trabajador
+        const trabajadorResponse = await axios.get(`http://localhost:8000/trabajadores/correo/${email}`);
+
+        if (trabajadorResponse.status === 200) {
+          const trabajador = trabajadorResponse.data;
+          if (trabajador.id_perfil === 1) {
+            handleLogin('admin'); // Administrador
+            //alert('Bienvenido Administrador');
+          } else if (trabajador.id_perfil === 2) {
+            handleLogin('user'); // Usuario normal
+            //alert('Bienvenido');
+          } else {
+            alert('Perfil de usuario no reconocido');
+          }
+        } else {
+          alert('No se pudieron obtener los detalles del trabajador');
+        }
+      } else {
+        alert('Correo electrónico o contraseña incorrectos');
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      alert('Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -28,11 +53,11 @@ const Login = ({ handleLogin }) => {
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Correo Electrónico</label>
-                    <input type="email" className="form-control" id="email" placeholder="Ingresa tu correo electrónico" />
+                    <input type="email" className="form-control" id="email" placeholder="Ingresa tu correo electrónico" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label">Contraseña</label>
-                    <input type="password" className="form-control" id="password" placeholder="Ingresa tu contraseña" />
+                    <input type="password" className="form-control" id="password" placeholder="Ingresa tu contraseña" required />
                   </div>
                   <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
                 </form>

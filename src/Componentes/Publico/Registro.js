@@ -1,25 +1,101 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import md5 from 'md5'; // Importar la biblioteca de MD5
 
 const Registro = () => {
-  // Estados para los valores de los campos del formulario
   const [nombre, setNombre] = useState('');
+  const [apellidoPaterno, setApellidoPaterno] = useState('');
+  const [apellidoMaterno, setApellidoMaterno] = useState('');
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [repetirContrasena, setRepetirContrasena] = useState('');
-  const [fotoPerfil, setFotoPerfil] = useState(null);
+  const [confirmarContrasena, setConfirmarContrasena] = useState('');
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = (event) => {
+  // Función para verificar si el correo ya está registrado
+  const verificarCorreoRegistrado = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/trabajadores/correo/${correo}`);
+      return response.status === 200; // true si el correo ya está registrado, false si no
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return false; // El correo no está registrado
+      } else {
+        throw error; // Manejar otros errores
+      }
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Aquí puedes realizar la lógica para enviar los datos del formulario
-    // por ejemplo, enviarlos a un servidor o manejarlos de otra manera
-    console.log('Datos enviados:', { nombre, correo, contrasena, fotoPerfil });
-    // Limpia los campos después del envío
-    setNombre('');
-    setCorreo('');
-    setContrasena('');
-    setRepetirContrasena('');
-    setFotoPerfil(null);
+    if (contrasena !== confirmarContrasena) {
+      alert('Las contraseñas no coinciden.');
+      return;
+    }
+
+    try {
+      // Verificar si el correo ya está registrado
+      const correoRegistrado = await verificarCorreoRegistrado();
+      if (correoRegistrado) {
+        alert('El correo electrónico ya está registrado. Por favor, utiliza otro correo.');
+        return;
+      }
+
+      let claveGenerada = await generateUniqueKey(); // Obtener clave única válida
+
+      // Encriptar la contraseña usando MD5
+      const contrasenaEncriptada = md5(contrasena);
+
+      const nuevoTrabajador = {
+        Nombre_del_trabajador: nombre,
+        Apellido_paterno: apellidoPaterno,
+        Apellido_materno: apellidoMaterno,
+        tipo_trabajador: 4, // Asignar por defecto el id 4
+        Contraseña: contrasenaEncriptada, // Usar la contraseña encriptada
+        Correo: correo,
+        id_perfil: 2, // Asignar por defecto el id 2
+        Clave_trabajador: claveGenerada
+      };
+
+      const registroResponse = await axios.post('http://localhost:8000/trabajadores', nuevoTrabajador);
+      console.log('Respuesta del servidor:', registroResponse.data);
+
+      // Limpia los campos después del envío exitoso
+      setNombre('');
+      setApellidoPaterno('');
+      setApellidoMaterno('');
+      setCorreo('');
+      setContrasena('');
+      setConfirmarContrasena('');
+      alert('Registro exitoso');
+    } catch (error) {
+      if (error.response && error.response.status !== 404) {
+        console.error('Error al registrar trabajador:', error);
+        alert('Hubo un error al registrar el trabajador. Por favor, inténtalo de nuevo.');
+      }
+    }
+  };
+
+  // Función para generar una clave aleatoria de 3 dígitos
+  const generateRandomKey = () => {
+    return Math.floor(100 + Math.random() * 900).toString();
+  };
+
+  // Función para obtener una clave única no existente en la base de datos
+  const generateUniqueKey = async () => {
+    let claveGenerada = generateRandomKey();
+    try {
+      let response = await axios.get(`http://localhost:8000/trabajadores/clave/${claveGenerada}`);
+      while (response.status === 200) {
+        claveGenerada = generateRandomKey();
+        response = await axios.get(`http://localhost:8000/trabajadores/clave/${claveGenerada}`);
+      }
+      return claveGenerada;
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return claveGenerada;
+      } else {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -28,23 +104,27 @@ const Registro = () => {
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre:</label>
-          <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="correo" className="form-label">Correo:</label>
-          <input type="email" className="form-control" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+          <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno:</label>
+          <input type="text" className="form-control" id="apellidoPaterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="apellidoMaterno" className="form-label">Apellido Materno:</label>
+          <input type="text" className="form-control" id="apellidoMaterno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="correo" className="form-label">Correo Electrónico:</label>
+          <input type="email" className="form-control" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
         </div>
         <div className="mb-3">
           <label htmlFor="contrasena" className="form-label">Contraseña:</label>
-          <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} />
+          <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="repetirContrasena" className="form-label">Repetir Contraseña:</label>
-          <input type="password" className="form-control" id="repetirContrasena" value={repetirContrasena} onChange={(e) => setRepetirContrasena(e.target.value)} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="fotoPerfil" className="form-label">Foto de Perfil:</label>
-          <input type="file" className="form-control" id="fotoPerfil" onChange={(e) => setFotoPerfil(e.target.files[0])} />
+          <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
+          <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
         </div>
         <button type="submit" className="btn btn-primary">Registrarse</button>
       </form>
