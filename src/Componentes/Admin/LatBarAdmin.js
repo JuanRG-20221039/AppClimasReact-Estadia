@@ -9,13 +9,13 @@ const LatBarAdmin = () => {
         <ul className='ulMargen'>
           <li><NavLink to="admin-edificios" activeClassName="active">Administrar Edificios</NavLink></li>
           <li><NavLink to="admin-aulas" activeClassName="active">Administrar Aulas</NavLink></li>
+          <li><NavLink to="admin-aulas-horarios" activeClassName="active">Administrar Horarios de Aulas</NavLink></li>
           <li><NavLink to="admin-modulos-iot" activeClassName="active">Administrar Modulos IOT</NavLink></li>
           <li><NavLink to="admin-vinculacion-iot" activeClassName="active">Vincular Modulos IOT</NavLink></li>
           <li><NavLink to="admin-marcas" activeClassName="active">Administrar Marcas</NavLink></li>
           <li><NavLink to="admin-climas" activeClassName="active">Registro de Climas</NavLink></li>
           <li><NavLink to="admin-climas-ubicaciones" activeClassName="active">Administrar ubicaciones de los Climas</NavLink></li>
-          <li><NavLink to="admin-bitacora" activeClassName="active">Bitácora</NavLink></li>
-          <li><NavLink to="admin-reportes" activeClassName="active">Reportes</NavLink></li>
+          <li><NavLink to="admin-reportes" activeClassName="active">Bandeja de Reportes</NavLink></li>
           <li><NavLink to="admin-historial" activeClassName="active">Historial de Acceso</NavLink></li>
         </ul>
       </nav>

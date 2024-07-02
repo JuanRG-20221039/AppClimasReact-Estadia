@@ -102,7 +102,7 @@ export default function Ubicaciones() {
     <div>
       <h2>Ubicaciones</h2>
       <Button variant="primary" onClick={handleShowCrearUbicacionModal}>Crear Ubicación</Button>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
             <th>ID Ubicación Clima</th>

@@ -156,7 +156,7 @@ export default function Edificios() {
     <div>
       <h2>Edificios</h2>
       <button className="btn btn-primary btnCrear" onClick={() => setShowCreateModal(true)}>Crear Nuevo Edificio</button>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
             {/* <th className='id'>Numero</th> */}

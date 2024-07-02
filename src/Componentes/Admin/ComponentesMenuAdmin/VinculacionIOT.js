@@ -150,7 +150,7 @@ export default function VinculacionIOT() {
       <Button variant="success" onClick={handleCrearVinculacion} style={{ marginBottom: '20px' }}>
         Crear Vinculación
       </Button>
-      <Table striped bordered hover>
+      <Table className="table table-striped">
         <thead>
           <tr>
             <th>Numero de Vinculación</th>

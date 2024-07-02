@@ -9,3 +9,4 @@ export default function PanelControl() {
     <div>PanelControl</div>
   )
 }
+  

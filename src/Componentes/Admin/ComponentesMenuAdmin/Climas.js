@@ -197,7 +197,7 @@ export default function Climas() {
     <div>
       <h2>Climas</h2>
       <Button variant="primary" onClick={handleShowCrearClimaModal}>Crear Nuevo Clima</Button>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
             <th>No. Registro</th>

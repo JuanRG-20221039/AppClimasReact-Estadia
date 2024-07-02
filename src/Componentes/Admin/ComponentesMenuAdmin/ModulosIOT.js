@@ -152,7 +152,7 @@ export default function ModulosIOT() {
       <Button variant="primary" onClick={handleRegistrarModulo} style={{ marginBottom: '20px' }}>
         Registrar Nuevo Módulo de IoT
       </Button>
-      <Table striped bordered hover>
+      <Table className="table table-striped">
         <thead>
           <tr>
             <th>MAC del Dispositivo</th>

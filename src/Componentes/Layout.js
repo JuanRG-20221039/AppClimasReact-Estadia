@@ -9,6 +9,7 @@ import Acercade from './Publico/Acercade';
 import Registro from './Publico/Registro';
 import PerfilUser from './User/PerfilUser';
 import ConfiguracionUser from './User/ConfiguracionUser';
+import ReportesUser from './User/ReportesUser';
 import MenuLoginAdmin from './Admin/MenuLoginAdmin'; // Importa MenuLoginAdmin
 
 const Inicio = () => {
@@ -40,6 +41,7 @@ const Inicio = () => {
         {loggedIn && (
           <>
             <Route path="/menu" element={<MenuLoginUser />} />
+            <Route path="/reportar" element={<ReportesUser />} />
             <Route path="/perfil" element={<PerfilUser />} />
             <Route path="/configuracion" element={<ConfiguracionUser />} />
             {/* RUTAS PARA ADMINISTRADOR */}

@@ -123,7 +123,7 @@ export default function Marcas() {
       <Button variant="primary" onClick={handleRegistrarMarca} style={{ marginBottom: '10px' }}>
         Registrar Marca
       </Button>
-      <Table striped bordered hover>
+      <Table className="table table-striped">
         <thead>
           <tr>
             <th>Nombre</th>

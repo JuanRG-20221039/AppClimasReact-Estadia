@@ -147,7 +147,7 @@ export default function Aulas() {
       <Button variant="primary" onClick={() => setShowCreateModal(true)}>
         Crear Nueva Aula
       </Button>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
             <th>Nombre</th>
