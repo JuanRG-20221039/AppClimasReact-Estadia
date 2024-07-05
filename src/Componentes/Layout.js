@@ -8,24 +8,26 @@ import Vision from './Publico/Vision';
 import Acercade from './Publico/Acercade';
 import Registro from './Publico/Registro';
 import PerfilUser from './User/PerfilUser';
-import ConfiguracionUser from './User/ConfiguracionUser';
 import ReportesUser from './User/ReportesUser';
 import MenuLoginAdmin from './Admin/MenuLoginAdmin'; // Importa MenuLoginAdmin
 
 const Inicio = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para verificar si el usuario ha iniciado sesión
   const [role, setRole] = useState(''); // Estado para el rol del usuario
+  const [idClaveTrabajador, setIdClaveTrabajador] = useState(null); // Estado para almacenar Id_clave_trabajador
 
-  const handleLogin = (userRole) => {
+  const handleLogin = (userRole, idTrabajador) => {
     // Esta función se llamará cuando el usuario inicie sesión correctamente
     setLoggedIn(true);
     setRole(userRole); // Establece el rol del usuario
+    setIdClaveTrabajador(idTrabajador); // Guarda el Id_clave_trabajador
   };
 
   const handleLogout = () => {
     // Esta función se llamará cuando el usuario cierre sesión
     setLoggedIn(false);
     setRole(''); // Resetea el rol del usuario
+    setIdClaveTrabajador(null); // Resetea el Id_clave_trabajador
   };
 
   return (
@@ -42,8 +44,8 @@ const Inicio = () => {
           <>
             <Route path="/menu" element={<MenuLoginUser />} />
             <Route path="/reportar" element={<ReportesUser />} />
-            <Route path="/perfil" element={<PerfilUser />} />
-            <Route path="/configuracion" element={<ConfiguracionUser />} />
+            {/* Pasar el Id_clave_trabajador como prop a PerfilUser */}
+            <Route path="/perfil" element={<PerfilUser idClaveTrabajador={idClaveTrabajador} />} />
             {/* RUTAS PARA ADMINISTRADOR */}
             {role === 'admin' && <Route path="/menuAdmin/*" element={<MenuLoginAdmin />} />} {/* Utiliza MenuLoginAdmin */}
           </>

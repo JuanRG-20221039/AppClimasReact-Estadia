@@ -11,6 +11,8 @@ export default function Marcas() {
 
   useEffect(() => {
     fetchData();
+    const intervalId = setInterval(fetchData, 1000); // Actualiza cada 1 segundo
+    return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonta
   }, []);
 
   const fetchData = async () => {

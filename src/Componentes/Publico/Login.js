@@ -16,17 +16,15 @@ const Login = ({ handleLogin }) => {
       });
 
       if (loginResponse.status === 200) {
-        // Si la autenticación es exitosa, obtener los detalles del trabajador
+        // Si la autenticación es exitosa, obtener los detalles del trabajador por su correo electrónico
         const trabajadorResponse = await axios.get(`http://localhost:8000/trabajadores/correo/${email}`);
 
         if (trabajadorResponse.status === 200) {
           const trabajador = trabajadorResponse.data;
           if (trabajador.id_perfil === 1) {
-            handleLogin('admin'); // Administrador
-            //alert('Bienvenido Administrador');
+            handleLogin('admin', trabajador.Id_clave_trabajador); // Administrador
           } else if (trabajador.id_perfil === 2) {
-            handleLogin('user'); // Usuario normal
-            //alert('Bienvenido');
+            handleLogin('user', trabajador.Id_clave_trabajador); // Usuario normal
           } else {
             alert('Perfil de usuario no reconocido');
           }

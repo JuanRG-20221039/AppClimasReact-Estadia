@@ -164,7 +164,7 @@ export default function Climas() {
       const ubicacionesCheckResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${id}`);
 
       if (ubicacionesCheckResponse.status === 200) {
-        console.log('El clima está asignado en alguna ubicación, no se puede eliminar.');
+        alert('El clima está asignado en alguna ubicación, no se puede eliminar.');
         return;
       }
 
