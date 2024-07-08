@@ -11,30 +11,20 @@ export default function MenuLogin() {
   const [selectedAula, setSelectedAula] = useState('');
   const [isClimaOn, setIsClimaOn] = useState(false);
   const [showNoClimaAlert, setShowNoClimaAlert] = useState(false);
+  const [idPlacaPrincipal, setIdPlacaPrincipal] = useState(null);
 
   useEffect(() => {
-    // Obtener la lista de edificios
     axios.get('http://localhost:8000/edificios')
-      .then(response => {
-        setEdificios(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching edificios:', error);
-      });
+      .then(response => setEdificios(response.data))
+      .catch(error => console.error('Error fetching edificios:', error));
   }, []);
 
   useEffect(() => {
     if (selectedEdificio) {
-      // Obtener la lista de aulas del edificio seleccionado
       axios.get(`http://localhost:8000/aulas/edificio/${selectedEdificio}`)
-        .then(response => {
-          setAulas(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching aulas:', error);
-        });
+        .then(response => setAulas(response.data))
+        .catch(error => console.error('Error fetching aulas:', error));
     } else {
-      // Si no hay edificio seleccionado, resetear la lista de aulas
       setAulas([]);
       setSelectedAula('');
       setClimaInfo(null);
@@ -44,67 +34,71 @@ export default function MenuLogin() {
 
   useEffect(() => {
     if (selectedAula) {
-      // Obtener el id del clima del aula seleccionada
       axios.get(`http://localhost:8000/ubicaciones_climas/aula/${selectedAula}`)
         .then(response => {
           const climaId = response.data[0]?.Id_clima;
           if (climaId) {
-            // Obtener la información del clima
+            setShowNoClimaAlert(false);
+
             axios.get(`http://localhost:8000/climas/${climaId}`)
               .then(response => {
                 setClimaInfo(response.data);
-  
-                // Obtener Id_vinculacion_iot desde climaInfo
-                const Id_vinculacion_iot = response.data.Id_vinculacion_iot;
-  
-                // Consultar la vinculación para obtener Id_placa_principal
-                axios.get(`http://localhost:8000/vinculacion/${Id_vinculacion_iot}`)
-                  .then(response => {
-                    const Id_placa_principal = response.data.Id_placa_principal;
-  
-                    // Enviar el estado del clima a Id_placa_principal
-                    const nuevoEstadoClima = isClimaOn ? 1 : 0;
-                    axios.put(`http://localhost:8000/iot/${Id_placa_principal}`, { Estado_clima: nuevoEstadoClima })
-                      .then(response => {
-                        console.log('Estado del clima actualizado correctamente.');
-                      })
-                      .catch(error => {
-                        console.error('Error al actualizar el estado del clima:', error);
-                      });
-                  })
-                  .catch(error => {
-                    console.error('Error fetching Id_placa_principal:', error);
-                  });
+                const idVinculacionIot = response.data.Id_vinculacion_iot;
+
+                axios.get(`http://localhost:8000/vinculacion/${idVinculacionIot}`)
+                .then(response => {
+                  const idPlacaPrincipal = response.data.Id_placa_principal;
+                  setIdPlacaPrincipal(idPlacaPrincipal);
+              
+                  axios.get(`http://localhost:8000/iot/${idPlacaPrincipal}`)
+                    .then(response => {
+                      const estadoClima = response.data.Estado_clima;
+                      setIsClimaOn(estadoClima === 1);
+                    })
+                    .catch(error => console.error('Error fetching Estado_clima:', error));
+                })
+                .catch(error => console.error('Error fetching Id_placa_principal:', error));              
+
+                return response.data.Id_marca;
+              })
+              .then(marcaId => {
+                axios.get(`http://localhost:8000/marcas/${marcaId}`)
+                  .then(response => setMarca(response.data))
+                  .catch(error => console.error('Error fetching marca info:', error));
               })
               .catch(error => {
                 console.error('Error fetching clima info:', error);
-                // Limpiar la información del clima en caso de error
                 setClimaInfo(null);
+                setMarca(null);
               });
           } else {
-            // Mostrar alerta si no hay clima asignado
             setShowNoClimaAlert(true);
-            // Limpiar la información del clima
             setClimaInfo(null);
+            setMarca(null);
           }
         })
         .catch(error => {
           console.error('Error fetching clima id:', error);
-          // Mostrar alerta en caso de error
           setShowNoClimaAlert(true);
-          // Limpiar la información del clima
           setClimaInfo(null);
+          setMarca(null);
         });
     } else {
-      // Si no hay aula seleccionada, resetear la información del clima
       setShowNoClimaAlert(false);
       setClimaInfo(null);
+      setMarca(null);
     }
-  }, [selectedAula, isClimaOn]);  
+  }, [selectedAula]);
 
   const handleClimaToggle = () => {
-    setIsClimaOn(prevState => !prevState);
-  };
+    const newState = isClimaOn ? 0 : 1;
+  
+    if (idPlacaPrincipal) {
+      axios.put(`http://localhost:8000/iot/${idPlacaPrincipal}`, { Estado_clima: newState })
+        .then(() => setIsClimaOn(!isClimaOn))
+        .catch(error => console.error('Error updating Estado_clima:', error));
+    }
+  };  
 
   return (
     <Container>
