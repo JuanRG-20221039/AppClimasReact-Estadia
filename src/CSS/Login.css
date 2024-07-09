@@ -1,0 +1,24 @@
+.login-container {
+    background-image: url('../../public/IMG/Uthh.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardStyle{
+    margin-top: -150px;
+}
+.cardShadow{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+.buttonS{
+    background-color: #00883E!important;
+    border: none!important;
+}
+.buttonS:hover{
+    background-color: #1fb160!important;
+}

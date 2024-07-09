@@ -4,8 +4,7 @@
 
 .sidebar {
   width: 250px;
-  background-color: #25425f;
-  color: #ecf0f1;
+  background-color: #FBE290; /*FONDO DE LA BARRA LATERAL*/
   padding: 20px;
   height: 100vh; /* Asegura que la barra lateral ocupe toda la altura de la ventana */
   position: fixed; /* Hace que la barra lateral sea fija */
@@ -22,7 +21,7 @@
 }
 
 .sidebar nav ul li a {
-  color: #ecf0f1;
+  color: #000;
   text-decoration: none;
   font-size: 18px;
   display: block;
@@ -30,9 +29,14 @@
   border-radius: 5px;
 }
 
-.sidebar nav ul li a:hover,
+.sidebar nav ul li a:hover{
+  background-color: #ccb466;
+}
+
 .sidebar nav ul li a.active {
-  background-color: #3c6288;
+  color: #000;
+  background-color: #ccb466;
+  text-decoration: underline;
 }
 
 .content {
@@ -47,5 +51,5 @@
 }
 
 .ulMargen{
-margin-bottom: 100px;
+  margin-bottom: 100px;
 }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function ModulosIOT() {
   const [modulosIOT, setModulosIOT] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -148,8 +150,10 @@ export default function ModulosIOT() {
 
   return (
     <div>
-      <h2>Módulos IOT</h2>
-      <Button variant="primary" onClick={handleRegistrarModulo} style={{ marginBottom: '20px' }}>
+      <div className='tituloComponente'>
+        <h2>Registro de Módulos IOT</h2>
+      </div>
+      <Button variant="primary botonC" onClick={handleRegistrarModulo} style={{ marginBottom: '20px' }}>
         Registrar Nuevo Módulo de IoT
       </Button>
       <Table className="table table-striped">
@@ -172,8 +176,8 @@ export default function ModulosIOT() {
               <td>{modulo.Temperatura_value}</td>
               <td>{modulo.Estado_clima}</td>
               <td>
-                <Button variant="success" onClick={() => handleEditarModulo(modulo)}>Editar</Button>{' '}
-                <Button variant="danger" onClick={() => handleShowDeleteModal(modulo.Id_iot)}>Eliminar</Button>
+                <Button variant="success botonS" onClick={() => handleEditarModulo(modulo)}>Editar</Button>{' '}
+                <Button variant="danger botonD" onClick={() => handleShowDeleteModal(modulo.Id_iot)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -189,10 +193,10 @@ export default function ModulosIOT() {
           ¿Está seguro de que desea eliminar este módulo de IoT?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+          <Button variant="secondary botonM botonMCC" onClick={handleCloseDeleteModal}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={handleConfirmDelete}>
+          <Button variant="danger botonM botonMC" onClick={handleConfirmDelete}>
             Eliminar
           </Button>
         </Modal.Footer>
@@ -216,10 +220,10 @@ export default function ModulosIOT() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseCreateModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveModulo}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveModulo}>
             Guardar
           </Button>
         </Modal.Footer>
@@ -243,10 +247,10 @@ export default function ModulosIOT() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEditModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseEditModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveModulo}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveModulo}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

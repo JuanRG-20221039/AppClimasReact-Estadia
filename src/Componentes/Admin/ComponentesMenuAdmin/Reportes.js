@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 const Reportes = () => {
   const [reportes, setReportes] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -62,8 +64,10 @@ const Reportes = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Reportes</h2>
+    <div className="container">
+      <div className='tituloComponente'>
+        <h2>Bandeja de Reportes</h2>
+      </div>
       <table className="table table-striped">
         <thead>
           <tr>
@@ -84,7 +88,7 @@ const Reportes = () => {
               <td>{reporte.Fecha_solicitud}</td>
               <td>{reporte.Descripcion}</td>
               <td>
-                <button className="btn btn-primary" onClick={() => mostrarModal(reporte.Id_reporte_usuario)}>Liberar reporte</button>
+                <button className="btn btn-primary botonS" onClick={() => mostrarModal(reporte.Id_reporte_usuario)}>Liberar reporte</button>
               </td>
             </tr>
           ))}
@@ -100,10 +104,10 @@ const Reportes = () => {
           <p>¿Estás seguro de que quieres liberar este reporte?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={cerrarModal}>
+          <Button variant="secondary botonM botonMCC" onClick={cerrarModal}>
             Cancelar
           </Button>
-          <Button variant="success" onClick={liberarReporte}>
+          <Button variant="success botonM botonMS" onClick={liberarReporte}>
             Confirmar liberación
           </Button>
         </Modal.Footer>

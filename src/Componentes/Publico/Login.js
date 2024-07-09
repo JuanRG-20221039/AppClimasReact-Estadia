@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import md5 from 'md5';
+import '../../CSS/Login.css';
 
 const Login = ({ handleLogin }) => {
   const handleSubmit = async (e) => {
@@ -41,13 +42,13 @@ const Login = ({ handleLogin }) => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6">
-            <div className="card">
+            <div className="card cardStyle cardShadow">
               <div className="card-body">
-                <h3 className="card-title text-center">Iniciar Sesión</h3>
+                <h3 className="card-title text-center">Inicio de Sesión</h3>
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Correo Electrónico</label>
@@ -57,7 +58,7 @@ const Login = ({ handleLogin }) => {
                     <label htmlFor="password" className="form-label">Contraseña</label>
                     <input type="password" className="form-control" id="password" placeholder="Ingresa tu contraseña" required />
                   </div>
-                  <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
+                  <button type="submit" className="btn btn-primary w-100 buttonS">Iniciar Sesión</button>
                 </form>
               </div>
             </div>

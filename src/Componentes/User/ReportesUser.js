@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
+import '../../CSS/StyleGeneralAdmin.css'
+
 export default function ReportesUser() {
   const [formData, setFormData] = useState({
     edificio: '',
@@ -39,7 +41,10 @@ export default function ReportesUser() {
 
   return (
     <div className="container mt-4">
-      <h2>Reportes de Usuario</h2>
+      <div className='tituloComponente'>
+        <h2>Reportes</h2>
+      </div>
+      <p></p>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="edificio">
           <Form.Label>Seleccionar Edificio</Form.Label>

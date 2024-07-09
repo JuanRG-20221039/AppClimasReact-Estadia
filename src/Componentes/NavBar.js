@@ -17,7 +17,7 @@ const NavBar = ({ loggedIn, role, handleLogout }) => {
               <li className="nav-item"><Link to="/menu">Panel de control</Link></li>
               <li className="nav-item"><Link to="/reportar">Reportar</Link></li>
               <li className="nav-item"><Link to="/perfil">Perfil</Link></li>
-              <li className="nav-item"><Link onClick={handleLogout}>Cerrar Sesión</Link></li>
+              <li className="nav-item"><Link className='logoutHover' onClick={handleLogout}>Cerrar Sesión</Link></li>
             </>
           )}
           {!loggedIn && (
@@ -30,6 +30,11 @@ const NavBar = ({ loggedIn, role, handleLogout }) => {
             </>
           )}
         </ul>
+        
+        <div className="navLogoDiv">
+          <img className="navLogoImg" src="/IMG/UTHHlogo.jpg" alt="UTHHlogo" />
+        </div>
+
       </nav>
     </div>
   );

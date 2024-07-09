@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, Container, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
+import '../../CSS/StyleGeneralAdmin.css'
+
 export default function MenuLogin() {
   const [edificios, setEdificios] = useState([]);
   const [aulas, setAulas] = useState([]);
@@ -102,9 +104,11 @@ export default function MenuLogin() {
 
   return (
     <Container>
-      <Row className="mb-3">
+      <Row className="mb-3 margen">
         <Col>
-          <h1>Panel de inicio de usuario</h1>
+          <div className='tituloComponente'>
+            <h1>Panel de cotrol de climas</h1>
+          </div>
         </Col>
       </Row>
       <Row className="mb-3">
@@ -136,7 +140,7 @@ export default function MenuLogin() {
         </Col>
         <Col>
           {showNoClimaAlert && (
-            <Alert variant="warning" onClose={() => setShowNoClimaAlert(false)} dismissible>
+            <Alert variant="warning" className='margen' onClose={() => setShowNoClimaAlert(false)} dismissible>
               Este salón no tiene un clima asignado.
             </Alert>
           )}
@@ -145,7 +149,7 @@ export default function MenuLogin() {
               <h5>Clima: {climaInfo.Modelo}</h5>
               <p>Marca: {marca.Nombre_marca}</p>
               <p>Fecha de Ingreso: {new Date(climaInfo.Fecha_ingreso).toLocaleDateString()}</p>
-              <Button variant={isClimaOn ? 'danger' : 'success'} onClick={handleClimaToggle}>
+              <Button variant={isClimaOn ? 'danger botonD' : 'success botonS'} onClick={handleClimaToggle}>
                 {isClimaOn ? 'Apagar' : 'Encender'}
               </Button>
             </div>

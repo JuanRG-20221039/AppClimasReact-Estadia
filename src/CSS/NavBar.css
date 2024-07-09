@@ -1,4 +1,3 @@
-
 /* DESING DE LA BARRA DE NAVEGACION */
 .navbar {
   background-color: #333;
@@ -26,6 +25,20 @@
   text-decoration: none;
 }
 .nav-item a:hover {
-  background-color: #ddd;
-  color: black;
+  color: #00ff73;
+  background-color: #4b4b4b;
+  border-radius: 4px;
+}
+
+.logoutHover:hover{
+  border-radius: 4px !important;
+  color: #000 !important;
+  background-color: #ff5757 !important;
+}
+
+.navLogoDiv{
+  margin-right: 10px;
+}
+.navLogoImg{
+  height: 60px;
 }

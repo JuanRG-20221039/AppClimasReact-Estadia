@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Marcas() {
   const [marcas, setMarcas] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -121,8 +123,10 @@ export default function Marcas() {
 
   return (
     <div>
-      <h2>Marcas</h2>
-      <Button variant="primary" onClick={handleRegistrarMarca} style={{ marginBottom: '10px' }}>
+      <div className='tituloComponente'>
+        <h2>Registro de Marcas</h2>
+      </div>
+      <Button variant="primary botonC" onClick={handleRegistrarMarca} style={{ marginBottom: '10px' }}>
         Registrar Marca
       </Button>
       <Table className="table table-striped">
@@ -137,8 +141,8 @@ export default function Marcas() {
             <tr key={marca.Id_marca}>
               <td>{marca.Nombre_marca}</td>
               <td>
-                <Button variant="success" onClick={() => handleEdit(marca)}>Editar</Button>{' '}
-                <Button variant="danger" onClick={() => handleDelete(marca.Id_marca)}>Eliminar</Button>
+                <Button variant="success botonS" onClick={() => handleEdit(marca)}>Editar</Button>{' '}
+                <Button variant="danger botonD" onClick={() => handleDelete(marca.Id_marca)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -163,10 +167,10 @@ export default function Marcas() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseRegistroModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseRegistroModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveNuevaMarca}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveNuevaMarca}>
             Guardar
           </Button>
         </Modal.Footer>
@@ -190,10 +194,10 @@ export default function Marcas() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => setShowEditModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveChanges}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveChanges}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

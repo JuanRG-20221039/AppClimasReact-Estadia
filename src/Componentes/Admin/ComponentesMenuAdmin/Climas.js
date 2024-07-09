@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Modal, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Climas() {
   const [climas, setClimas] = useState([]);
   const [vinculacionesDisponibles, setVinculacionesDisponibles] = useState([]);
@@ -195,12 +197,14 @@ export default function Climas() {
 
   return (
     <div>
-      <h2>Climas</h2>
-      <Button variant="primary" onClick={handleShowCrearClimaModal}>Crear Nuevo Clima</Button>
+      <div className='tituloComponente'>
+        <h2>Registro y Administración de Climas</h2>
+      </div>
+      <Button variant="primary botonC" onClick={handleShowCrearClimaModal}>Crear Nuevo Clima</Button>
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>No. Registro</th>
+            {/* <th>No. Registro</th> */}
             <th>Modelo</th>
             <th>Marca</th>
             <th>Capacidad</th>
@@ -213,7 +217,7 @@ export default function Climas() {
         <tbody>
           {climas.map(clima => (
             <tr key={clima.Id_clima}>
-              <td>{clima.Id_clima}</td>
+              {/* <td>{clima.Id_clima}</td> */}
               <td>{clima.Modelo}</td>
               <td>{clima.Nombre_marca}</td>
               <td>{clima.Capacidad}kg</td>
@@ -221,8 +225,8 @@ export default function Climas() {
               <td>{clima.Fecha_ingreso}</td>
               <td>Vinculación: {clima.Id_vinculacion_iot}</td>
               <td>
-                <Button variant="success" className="btn btn-success" onClick={() => handleEdit(clima)}>Editar</Button>{' '}
-                <Button variant="danger" className="btn btn-danger" onClick={() => handleDelete(clima.Id_clima)}>Eliminar</Button>
+                <Button variant="success botonS" className="btn btn-success" onClick={() => handleEdit(clima)}>Editar</Button>
+                <Button variant="danger botonD" className="btn btn-danger" onClick={() => handleDelete(clima.Id_clima)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -238,7 +242,7 @@ export default function Climas() {
           No hay vinculaciones disponibles para registrar un nuevo clima.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseNoVinculacionesModal}>
+          <Button variant="secondary botonM botonMCC" onClick={handleCloseNoVinculacionesModal}>
             Cerrar
           </Button>
         </Modal.Footer>
@@ -288,10 +292,10 @@ export default function Climas() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCrearClimaModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseCrearClimaModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleRegistrarClima} disabled={!modelo || !selectedMarca || !capacidad || !voltaje || !fechaIngreso || !selectedVinculacion}>
+          <Button variant="primary botonM botonMS" onClick={handleRegistrarClima} disabled={!modelo || !selectedMarca || !capacidad || !voltaje || !fechaIngreso || !selectedVinculacion}>
             Registrar Clima
           </Button>
         </Modal.Footer>
@@ -341,10 +345,10 @@ export default function Climas() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEditarClimaModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseEditarClimaModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleUpdateClima} disabled={!modelo || !selectedMarca || !capacidad || !voltaje || !fechaIngreso || !selectedVinculacion}>
+          <Button variant="primary botonM botonMS" onClick={handleUpdateClima} disabled={!modelo || !selectedMarca || !capacidad || !voltaje || !fechaIngreso || !selectedVinculacion}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

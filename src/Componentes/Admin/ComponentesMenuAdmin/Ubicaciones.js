@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Modal, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Ubicaciones() {
   const [ubicaciones, setUbicaciones] = useState([]);
   const [climas, setClimas] = useState([]);
@@ -100,12 +102,13 @@ export default function Ubicaciones() {
 
   return (
     <div>
-      <h2>Ubicaciones</h2>
-      <Button variant="primary" onClick={handleShowCrearUbicacionModal}>Crear Ubicación</Button>
+      <div className='tituloComponente'>
+        <h2>Administración de ubicaciones asiociadas a los climas</h2>
+      </div>
+      <Button variant="primary botonC" onClick={handleShowCrearUbicacionModal}>Crear Ubicación</Button>
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>ID Ubicación Clima</th>
             <th>Modelo Clima</th>
             <th>Nombre Aula</th>
             <th>Acciones</th>
@@ -114,11 +117,10 @@ export default function Ubicaciones() {
         <tbody>
           {ubicaciones.map(ubicacion => (
             <tr key={ubicacion.Id_ubicacion_Clima}>
-              <td>{ubicacion.Id_ubicacion_Clima}</td>
               <td>{getClimaModelo(ubicacion.Id_clima)}</td>
               <td>{getAulaNombre(ubicacion.Id_aula)}</td>
               <td>
-                <Button variant="danger" onClick={() => handleShowConfirmDeleteModal(ubicacion)}>Eliminar</Button>
+                <Button variant="danger botonD" onClick={() => handleShowConfirmDeleteModal(ubicacion)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -153,10 +155,10 @@ export default function Ubicaciones() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCrearUbicacionModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseCrearUbicacionModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleCrearUbicacion} disabled={!selectedClima || !selectedAula}>
+          <Button variant="primary botonM botonMS" onClick={handleCrearUbicacion} disabled={!selectedClima || !selectedAula}>
             Crear Ubicación
           </Button>
         </Modal.Footer>
@@ -171,10 +173,10 @@ export default function Ubicaciones() {
           ¿Está seguro de que desea eliminar esta ubicación?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirmDeleteModal}>
+          <Button variant="secondary botonM botonMCC" onClick={handleCloseConfirmDeleteModal}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
+          <Button variant="danger botonM botonMC" onClick={handleDelete}>
             Eliminar
           </Button>
         </Modal.Footer>

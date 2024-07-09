@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Horarios() {
   const [edificios, setEdificios] = useState([]);
   const [selectedEdificio, setSelectedEdificio] = useState('');
@@ -162,8 +164,9 @@ export default function Horarios() {
   };  
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4" style={{marginTop:-20}}>Selecciona un edificio y un aula:</h2>
+    <div className="container">
+      <h2 className='tituloComponente'>Administración de Horarios</h2>
+      <h2>Selecciona un edificio y un aula:</h2>
       <div className="row">
         <div className="col-md-6">
           <label htmlFor="edificio" className="form-label">Edificio:</label>
@@ -191,7 +194,7 @@ export default function Horarios() {
       
       <div className="mt-4">
         {selectedAula && (
-          <button className="btn btn-primary" onClick={openModal}>Nuevo registro</button>
+          <button className="btn btn-primary botonC" onClick={openModal}>Nuevo registro</button>
         )}
       </div>
 
@@ -215,7 +218,7 @@ export default function Horarios() {
                     <td>{dia ? dia.Dia : 'Día no encontrado'}</td>
                     <td>{hora ? `${hora.Hora_inicio} - ${hora.Hora_fin}` : 'Horario no encontrado'}</td>
                     <td>
-                    <button className="btn btn-danger" onClick={() => handleEliminar(horario.Id_horario)}>Eliminar</button>
+                    <button className="btn btn-danger botonD" onClick={() => handleEliminar(horario.Id_horario)}>Eliminar</button>
                     </td>
                   </tr>
                 );
@@ -267,8 +270,8 @@ export default function Horarios() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={handleRegistrar}>Registrar</Button>
-          <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
+          <Button variant="success botonM botonMS" onClick={handleRegistrar}>Registrar</Button>
+          <Button variant="secondary botonM botonMC" onClick={closeModal}>Cancelar</Button>
         </Modal.Footer>
       </Modal>
 
@@ -281,8 +284,8 @@ export default function Horarios() {
           <p>¿Estás seguro que deseas eliminar este horario?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="danger" onClick={confirmarEliminar}>Eliminar</Button>
-          <Button variant="secondary" onClick={closeConfirmModal}>Cancelar</Button>
+          <Button variant="danger botonM botonMC" onClick={confirmarEliminar}>Eliminar</Button>
+          <Button variant="secondary botonM botonMCC" onClick={closeConfirmModal}>Cancelar</Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Edificios() {
   const [edificios, setEdificios] = useState([]);
   const [modalData, setModalData] = useState({
@@ -154,8 +156,10 @@ export default function Edificios() {
 
   return (
     <div>
-      <h2>Edificios</h2>
-      <button className="btn btn-primary btnCrear" onClick={() => setShowCreateModal(true)}>Crear Nuevo Edificio</button>
+      <div className='tituloComponente'>
+        <h2>Panel de control para Edificios</h2>
+      </div>
+      <button className="btn btn-primary btnCrear botonC" onClick={() => setShowCreateModal(true)}>Crear Nuevo Edificio</button>
       <table className="table table-striped">
         <thead>
           <tr>
@@ -172,8 +176,8 @@ export default function Edificios() {
               <td>{edificio.Nombre_edificio}</td>
               <td>{edificio.Imagen}</td>
               <td>
-                <button className="btn btn-success btn1" onClick={() => handleEdit(edificio.Id_edificio)}>Editar</button>
-                <button className="btn btn-danger" onClick={() => handleDelete(edificio.Id_edificio)}>Eliminar</button>
+                <button className="btn btn-success btn1 botonS" onClick={() => handleEdit(edificio.Id_edificio)}>Editar</button>
+                <button className="btn btn-danger botonD" onClick={() => handleDelete(edificio.Id_edificio)}>Eliminar</button>
               </td>
             </tr>
           ))}
@@ -208,10 +212,10 @@ export default function Edificios() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => setShowEditModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveChanges}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveChanges}>
             Guardar Cambios
           </Button>
         </Modal.Footer>
@@ -245,10 +249,10 @@ export default function Edificios() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => setShowCreateModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleCreateNewEdificio}>
+          <Button variant="primary botonM botonMS" onClick={handleCreateNewEdificio}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

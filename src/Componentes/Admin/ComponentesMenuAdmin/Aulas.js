@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Aulas() {
   const [aulas, setAulas] = useState([]);
   const [edificios, setEdificios] = useState([]);
@@ -143,8 +145,10 @@ export default function Aulas() {
 
   return (
     <div>
-      <h2>Aulas</h2>
-      <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+      <div className='tituloComponente'>
+        <h2>Panel de control para Aulas</h2>
+      </div>
+      <Button variant="primary botonC" onClick={() => setShowCreateModal(true)}>
         Crear Nueva Aula
       </Button>
       <table className="table table-striped">
@@ -163,8 +167,8 @@ export default function Aulas() {
               <td>{getEdificioNombre(aula.Id_edificio)}</td>
               <td>{getTipoAulaNombre(aula.Id_tipo_aula)}</td>
               <td>
-                <button className="btn btn-success" onClick={() => handleEdit(aula)}>Editar</button>
-                <button className="btn btn-danger" onClick={() => handleDelete(aula.Id_aula)}>Eliminar</button>
+                <button className="btn btn-success botonS" onClick={() => handleEdit(aula)}>Editar</button>
+                <button className="btn btn-danger botonD" onClick={() => handleDelete(aula.Id_aula)}>Eliminar</button>
               </td>
             </tr>
           ))}
@@ -217,10 +221,10 @@ export default function Aulas() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => setShowEditModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveChanges}>
+          <Button variant="primary botonM botonMS" onClick={handleSaveChanges}>
             Guardar Cambios
           </Button>
         </Modal.Footer>
@@ -274,10 +278,10 @@ export default function Aulas() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => setShowCreateModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleCreateAula}>
+          <Button variant="primary botonM botonMS" onClick={handleCreateAula}>
             Crear Aula
           </Button>
         </Modal.Footer>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Table, Modal, Form } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function VinculacionIOT() {
   const [vinculaciones, setVinculaciones] = useState([]);
   const [placasDisponibles, setPlacasDisponibles] = useState([]);
@@ -146,8 +148,10 @@ export default function VinculacionIOT() {
 
   return (
     <div>
-      <h2>Vinculacion de Modulos</h2>
-      <Button variant="success" onClick={handleCrearVinculacion} style={{ marginBottom: '20px' }}>
+      <div className='tituloComponente'>
+        <h2>Vinculación de Modulos</h2>
+      </div>
+      <Button variant="success botonC" onClick={handleCrearVinculacion} style={{ marginBottom: '20px' }}>
         Crear Vinculación
       </Button>
       <Table className="table table-striped">
@@ -166,7 +170,7 @@ export default function VinculacionIOT() {
               <td>{macs[vinculacion.Id_vinculacion_iot]?.Mac_principal}</td>
               <td>{macs[vinculacion.Id_vinculacion_iot]?.Mac_secundaria}</td>
               <td>
-                <Button variant="danger" onClick={() => handleShowDeleteModal(vinculacion.Id_vinculacion_iot)}>
+                <Button variant="danger botonD" onClick={() => handleShowDeleteModal(vinculacion.Id_vinculacion_iot)}>
                   Eliminar Vinculación
                 </Button>
               </td>
@@ -185,10 +189,10 @@ export default function VinculacionIOT() {
           Esta accion tambien eliminara todos los registros del historial...
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+          <Button variant="secondary botonM botonMCC" onClick={handleCloseDeleteModal}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={handleConfirmDelete}>
+          <Button variant="danger botonM botonMC" onClick={handleConfirmDelete}>
             Eliminar
           </Button>
         </Modal.Footer>
@@ -243,11 +247,11 @@ export default function VinculacionIOT() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="secondary botonM botonMC" onClick={handleCloseCreateModal}>
             Cancelar
           </Button>
           <Button
-            variant="primary"
+            variant="primary botonM botonMS"
             onClick={handleSubmitVinculacion}
             disabled={!placaPrincipal || !placaSecundaria}
           >

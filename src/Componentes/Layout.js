@@ -11,6 +11,8 @@ import PerfilUser from './User/PerfilUser';
 import ReportesUser from './User/ReportesUser';
 import MenuLoginAdmin from './Admin/MenuLoginAdmin'; // Importa MenuLoginAdmin
 
+import '../CSS/Layout.css'
+
 const Inicio = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para verificar si el usuario ha iniciado sesión
   const [role, setRole] = useState(''); // Estado para el rol del usuario

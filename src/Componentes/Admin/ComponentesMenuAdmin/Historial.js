@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 export default function Historial() {
   const [historial, setHistorial] = useState([]);
 
@@ -38,12 +40,14 @@ export default function Historial() {
   }, []);
 
   return (
-    <div className="container mt-5">
-      <h2>Historial de Acceso</h2>
+    <div className="container">
+      <div className='tituloComponente'>
+        <h2>Historial de Acceso</h2>
+      </div>
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>ID Historial</th>
+            {/* <th>ID Historial</th> */}
             <th>Clave Trabajador</th>
             <th>Nombre del Trabajador</th>
             <th>Clima (No. Registro)</th>
@@ -54,7 +58,7 @@ export default function Historial() {
         <tbody>
           {historial.map(record => (
             <tr key={record.Id_historial_acceso}>
-              <td>{record.Id_historial_acceso}</td>
+              {/* <td>{record.Id_historial_acceso}</td> */}
               <td>{record.Clave_trabajador}</td>
               <td>{record.Nombre_del_trabajador}</td>
               <td>{record.Id_Clima}</td>

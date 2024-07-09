@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import md5 from 'md5'; // Importar la biblioteca de MD5
+import '../../CSS/Registro.css'
 
 const Registro = () => {
   const [nombre, setNombre] = useState('');
@@ -99,35 +100,39 @@ const Registro = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="mt-4">Registro</h2>
-      <form onSubmit={handleSubmit} className="mt-4">
-        <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre:</label>
-          <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno:</label>
-          <input type="text" className="form-control" id="apellidoPaterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="apellidoMaterno" className="form-label">Apellido Materno:</label>
-          <input type="text" className="form-control" id="apellidoMaterno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="correo" className="form-label">Correo Electrónico:</label>
-          <input type="email" className="form-control" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="contrasena" className="form-label">Contraseña:</label>
-          <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
-          <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
-        </div>
-        <button type="submit" className="btn btn-primary">Registrarse</button>
-      </form>
+    <div className="registro-background">
+      <div className="container registro-content">
+        <h2 className="mt-4">Registro</h2>
+        <p>Ingrese los datos solicitados para completar correctamente su registro dentro del sistema de control de climas de la uthh.</p>
+        <hr/>
+        <form onSubmit={handleSubmit} className="mt-4">
+          <div className="mb-3">
+            <label htmlFor="nombre" className="form-label">Nombre:</label>
+            <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno:</label>
+            <input type="text" className="form-control" id="apellidoPaterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="apellidoMaterno" className="form-label">Apellido Materno:</label>
+            <input type="text" className="form-control" id="apellidoMaterno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="correo" className="form-label">Correo Electrónico:</label>
+            <input type="email" className="form-control" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="contrasena" className="form-label">Contraseña:</label>
+            <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
+            <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
+          </div>
+          <button type="submit" className="btn btn-primary buttonS">Registrarse</button>
+        </form>
+      </div>
     </div>
   );
 };
