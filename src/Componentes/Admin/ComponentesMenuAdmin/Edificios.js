@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-import '../../../CSS/StyleGeneralAdmin.css'
+import '../../../CSS/StyleGeneralAdmin.css';
 
 export default function Edificios() {
   const [edificios, setEdificios] = useState([]);
@@ -101,6 +101,11 @@ export default function Edificios() {
           Imagen: modalData.Imagen
         });
         setShowEditModal(false);
+        setModalData({
+          Id_edificio: '',
+          Nombre_edificio: '',
+          Imagen: ''
+        });
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -111,6 +116,11 @@ export default function Edificios() {
             Imagen: modalData.Imagen
           });
           setShowEditModal(false);
+          setModalData({
+            Id_edificio: '',
+            Nombre_edificio: '',
+            Imagen: ''
+          });
         } catch (updateError) {
           console.error('Error updating edificio:', updateError);
         }
@@ -135,6 +145,10 @@ export default function Edificios() {
           Imagen: newEdificioData.Imagen
         });
         setShowCreateModal(false);
+        setNewEdificioData({
+          Nombre_edificio: '',
+          Imagen: ''
+        });
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -145,6 +159,10 @@ export default function Edificios() {
             Imagen: newEdificioData.Imagen
           });
           setShowCreateModal(false);
+          setNewEdificioData({
+            Nombre_edificio: '',
+            Imagen: ''
+          });
         } catch (createError) {
           console.error('Error creating edificio:', createError);
         }
@@ -212,7 +230,7 @@ export default function Edificios() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary botonM botonMC" onClick={() => setShowEditModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => { setShowEditModal(false); setModalData({ Id_edificio: '', Nombre_edificio: '', Imagen: '' }); }}>
             Cancelar
           </Button>
           <Button variant="primary botonM botonMS" onClick={handleSaveChanges}>
@@ -249,7 +267,7 @@ export default function Edificios() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary botonM botonMC" onClick={() => setShowCreateModal(false)}>
+          <Button variant="secondary botonM botonMC" onClick={() => { setShowCreateModal(false); setNewEdificioData({ Nombre_edificio: '', Imagen: '' }); }}>
             Cancelar
           </Button>
           <Button variant="primary botonM botonMS" onClick={handleCreateNewEdificio}>
