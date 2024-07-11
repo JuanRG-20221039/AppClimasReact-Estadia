@@ -30,13 +30,14 @@
 }
 
 .sidebar nav ul li a:hover{
-  background-color: #ccb466;
+  background-color: #FBE290;
+  text-decoration: underline;
 }
 
 .sidebar nav ul li a.active {
   color: #000;
-  background-color: #ccb466;
-  text-decoration: underline;
+  background-color: #FBE290;
+  border: 1px solid;
 }
 
 .content {

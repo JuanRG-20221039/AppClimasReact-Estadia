@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import '../../CSS/StyleGeneralAdmin.css'
+
+import '../../CSS/MenuLoginUser.css'
+
 const PerfilUser = ({ idClaveTrabajador }) => {
   const [trabajador, setTrabajador] = useState(null);
   const [tiposTrabajadores, setTiposTrabajadores] = useState([]);
@@ -42,11 +46,10 @@ const PerfilUser = ({ idClaveTrabajador }) => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 ">
+      <div className="fondoFixed"></div>
+      <h2 className="text-center tituloComponente margen">Perfil de Usuario</h2>
       <div className="card">
-        <div className="card-header">
-          <h2 className="card-title text-center">Perfil de Usuario</h2>
-        </div>
         <div className="card-body">
           <p><strong>Clave del Trabajador:</strong> {trabajador.Clave_trabajador}</p>
           <p><strong>Nombre:</strong> {trabajador.Nombre_del_trabajador}</p>

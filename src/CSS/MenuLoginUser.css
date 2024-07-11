@@ -1,0 +1,26 @@
+.cardFormB{
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    height: 320px;
+}
+
+.cardClima{
+    margin-top: 30px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.margenAlert{
+    margin-top: 30px;
+}
+
+.fondoFixed{
+    background-color: #FBE290;
+    width: 1000%;
+    height: 1000%;
+    margin: -100%;
+    position: absolute;
+    z-index: -1;
+}

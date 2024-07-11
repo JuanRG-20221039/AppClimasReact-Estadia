@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 
 import '../../CSS/StyleGeneralAdmin.css'
+import '../../CSS/ReportesUser.css'
+
+import '../../CSS/MenuLoginUser.css'
 
 export default function ReportesUser() {
   const [formData, setFormData] = useState({
@@ -41,44 +44,51 @@ export default function ReportesUser() {
 
   return (
     <div className="container mt-4">
+      <div className="fondoFixed"></div>
       <div className='tituloComponente'>
         <h2>Reportes</h2>
       </div>
       <p></p>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="edificio">
-          <Form.Label>Seleccionar Edificio</Form.Label>
-          <Form.Control
-            as="select"
-            name="edificio"
-            value={formData.edificio}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione un edificio...</option>
-            {/* Aquí podrías llenar las opciones dinámicamente */}
-            <option value="Edificio A">Edificio A</option>
-            <option value="Edificio B">Edificio B</option>
-            <option value="Edificio C">Edificio C</option>
-          </Form.Control>
-        </Form.Group>
+      <Form className='cardFormB' onSubmit={handleSubmit}>
 
-        <Form.Group controlId="aula">
-          <Form.Label>Seleccionar Aula</Form.Label>
-          <Form.Control
-            as="select"
-            name="aula"
-            value={formData.aula}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione un aula...</option>
-            {/* Aquí podrías llenar las opciones dinámicamente */}
-            <option value="Aula 101">Aula 101</option>
-            <option value="Aula 102">Aula 102</option>
-            <option value="Aula 103">Aula 103</option>
-          </Form.Control>
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="edificio">
+              <Form.Label>Seleccionar Edificio</Form.Label>
+              <Form.Control
+                as="select"
+                name="edificio"
+                value={formData.edificio}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un edificio...</option>
+                {/* Aquí podrías llenar las opciones dinámicamente */}
+                <option value="Edificio A">Edificio A</option>
+                <option value="Edificio B">Edificio B</option>
+                <option value="Edificio C">Edificio C</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="aula">
+              <Form.Label>Seleccionar Aula</Form.Label>
+              <Form.Control
+                as="select"
+                name="aula"
+                value={formData.aula}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un aula...</option>
+                {/* Aquí podrías llenar las opciones dinámicamente */}
+                <option value="Aula 101">Aula 101</option>
+                <option value="Aula 102">Aula 102</option>
+                <option value="Aula 103">Aula 103</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group controlId="descripcion">
           <Form.Label>Descripción</Form.Label>
@@ -92,29 +102,30 @@ export default function ReportesUser() {
           />
         </Form.Group>
 
-        <Form.Group controlId="tipoReporte">
-          <Form.Label>Tipo de Reporte</Form.Label>
-          <Form.Control
-            as="select"
-            name="tipoReporte"
-            value={formData.tipoReporte}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione un tipo de reporte...</option>
-            {/* Aquí podrías llenar las opciones dinámicamente */}
-            <option value="Incidente">Incidente</option>
-            <option value="Mantenimiento">Mantenimiento</option>
-            <option value="Otro">Otro</option>
-          </Form.Control>
-        </Form.Group>
-
-        <Button variant="primary" type="submit" className="mr-2">
-          Enviar
-        </Button>
-        <Button variant="secondary" type="button" onClick={handleCancel}>
-          Cancelar
-        </Button>
+        <Row>
+          <Col>
+            <Form.Group controlId="tipoReporte">
+            <Form.Label>Tipo de Reporte</Form.Label>
+            <Form.Control
+              as="select"
+              name="tipoReporte"
+              value={formData.tipoReporte}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione un tipo de reporte...</option>
+              {/* Aquí podrías llenar las opciones dinámicamente */}
+              <option value="Incidente">Incidente</option>
+              <option value="Mantenimiento">Mantenimiento</option>
+              <option value="Otro">Otro</option>
+            </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col className='botonesReport'>
+            <Button variant="primary" type="submit" className="botonS botonR">Enviar</Button>
+            <Button variant="secondary" type="button" className="botonD botonR" onClick={handleCancel}>Cancelar</Button>
+          </Col>
+        </Row>
       </Form>
     </div>
   );

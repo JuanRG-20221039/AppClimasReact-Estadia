@@ -3,6 +3,7 @@ import { Button, Container, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
 import '../../CSS/StyleGeneralAdmin.css'
+import '../../CSS/MenuLoginUser.css'
 
 export default function MenuLogin() {
   const [edificios, setEdificios] = useState([]);
@@ -104,6 +105,7 @@ export default function MenuLogin() {
 
   return (
     <Container>
+      <div className="fondoFixed"></div>
       <Row className="mb-3 margen">
         <Col>
           <div className='tituloComponente'>
@@ -111,7 +113,7 @@ export default function MenuLogin() {
           </div>
         </Col>
       </Row>
-      <Row className="mb-3">
+      <Row className="mb-3 cardFormB">
         <Col>
           <Form.Group>
             <Form.Label>Selecciona un edificio</Form.Label>
@@ -126,7 +128,7 @@ export default function MenuLogin() {
           </Form.Group>
         </Col>
         <Col>
-          <Form.Group>
+          <Form.Group className=''>
             <Form.Label>Selecciona un aula</Form.Label>
             <Form.Control as="select" value={selectedAula} onChange={(e) => setSelectedAula(e.target.value)} disabled={!selectedEdificio}>
               <option value="">Selecciona un aula</option>
@@ -140,12 +142,12 @@ export default function MenuLogin() {
         </Col>
         <Col>
           {showNoClimaAlert && (
-            <Alert variant="warning" className='margen' onClose={() => setShowNoClimaAlert(false)} dismissible>
+            <Alert variant="warning" className='margenAlert' onClose={() => setShowNoClimaAlert(false)} dismissible>
               Este salón no tiene un clima asignado.
             </Alert>
           )}
           {climaInfo && marca && (
-            <div className="p-3 border rounded">
+            <div className="p-3 border rounded cardClima">
               <h5>Clima: {climaInfo.Modelo}</h5>
               <p>Marca: {marca.Nombre_marca}</p>
               <p>Fecha de Ingreso: {new Date(climaInfo.Fecha_ingreso).toLocaleDateString()}</p>
