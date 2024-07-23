@@ -1,35 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 
-import '../../CSS/StyleGeneralAdmin.css'
-import '../../CSS/ReportesUser.css'
+import '../../CSS/StyleGeneralAdmin.css';
+import '../../CSS/ReportesUser.css';
+import '../../CSS/MenuLoginUser.css';
 
-import '../../CSS/MenuLoginUser.css'
-
-export default function ReportesUser() {
+export default function ReportesUser({ idClaveTrabajador }) {
   const [formData, setFormData] = useState({
     edificio: '',
     aula: '',
     descripcion: '',
     tipoReporte: ''
   });
+  const [edificios, setEdificios] = useState([]);
+  const [aulas, setAulas] = useState([]);
+  const [aulasFiltradas, setAulasFiltradas] = useState([]);
+  const [tiposReporte, setTiposReporte] = useState([]);
+
+  useEffect(() => {
+    const fetchEdificios = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/edificios');
+        setEdificios(response.data);
+      } catch (error) {
+        console.error('Error fetching edificios:', error);
+      }
+    };
+
+    const fetchAulas = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/aulas');
+        setAulas(response.data);
+      } catch (error) {
+        console.error('Error fetching aulas:', error);
+      }
+    };
+
+    const fetchTiposReporte = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/tiposReporte');
+        setTiposReporte(response.data);
+      } catch (error) {
+        console.error('Error fetching tiposReporte:', error);
+      }
+    };
+
+    fetchEdificios();
+    fetchAulas();
+    fetchTiposReporte();
+  }, []);
+
+  useEffect(() => {
+    if (formData.edificio) {
+      const aulasFiltradas = aulas.filter(aula => aula.Id_edificio === parseInt(formData.edificio));
+      setAulasFiltradas(aulasFiltradas);
+    } else {
+      setAulasFiltradas([]);
+    }
+  }, [formData.edificio, aulas]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí podrías enviar los datos del formulario a tu backend o realizar alguna acción
-    console.log(formData);
-    // Limpia el formulario después de enviar
-    setFormData({
-      edificio: '',
-      aula: '',
-      descripcion: '',
-      tipoReporte: ''
-    });
+    const fechaActual = new Date().toISOString();
+
+    const reporteData = {
+      Id_aula: formData.aula,
+      Id_Clave_trabajador: idClaveTrabajador,
+      Fecha_solicitud: fechaActual,
+      Fecha_finalizacion: null,
+      Descripcion: formData.descripcion,
+      Id_tipo_reporte: formData.tipoReporte
+    };
+
+    try {
+      await axios.post('http://localhost:8000/reportesUsuario', reporteData);
+      alert('Reporte enviado con éxito');
+
+      // Limpia el formulario después de enviar
+      setFormData({
+        edificio: '',
+        aula: '',
+        descripcion: '',
+        tipoReporte: ''
+      });
+    } catch (error) {
+      console.error('Error al enviar el reporte:', error);
+      alert('Error al enviar el reporte...');
+    }
   };
 
   const handleCancel = () => {
@@ -63,10 +126,11 @@ export default function ReportesUser() {
                 required
               >
                 <option value="">Seleccione un edificio...</option>
-                {/* Aquí podrías llenar las opciones dinámicamente */}
-                <option value="Edificio A">Edificio A</option>
-                <option value="Edificio B">Edificio B</option>
-                <option value="Edificio C">Edificio C</option>
+                {edificios.map(edificio => (
+                  <option key={edificio.Id_edificio} value={edificio.Id_edificio}>
+                    {edificio.Nombre_edificio}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
           </Col>
@@ -81,10 +145,11 @@ export default function ReportesUser() {
                 required
               >
                 <option value="">Seleccione un aula...</option>
-                {/* Aquí podrías llenar las opciones dinámicamente */}
-                <option value="Aula 101">Aula 101</option>
-                <option value="Aula 102">Aula 102</option>
-                <option value="Aula 103">Aula 103</option>
+                {aulasFiltradas.map(aula => (
+                  <option key={aula.Id_aula} value={aula.Id_aula}>
+                    {aula.Nombre_aula}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
           </Col>
@@ -105,20 +170,21 @@ export default function ReportesUser() {
         <Row>
           <Col>
             <Form.Group controlId="tipoReporte">
-            <Form.Label>Tipo de Reporte</Form.Label>
-            <Form.Control
-              as="select"
-              name="tipoReporte"
-              value={formData.tipoReporte}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Seleccione un tipo de reporte...</option>
-              {/* Aquí podrías llenar las opciones dinámicamente */}
-              <option value="Incidente">Incidente</option>
-              <option value="Mantenimiento">Mantenimiento</option>
-              <option value="Otro">Otro</option>
-            </Form.Control>
+              <Form.Label>Tipo de Reporte</Form.Label>
+              <Form.Control
+                as="select"
+                name="tipoReporte"
+                value={formData.tipoReporte}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un tipo de reporte...</option>
+                {tiposReporte.map(tipo => (
+                  <option key={tipo.Id_tipo_reporte} value={tipo.Id_tipo_reporte}>
+                    {tipo.Tipo_reporte}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
           </Col>
           <Col className='botonesReport'>

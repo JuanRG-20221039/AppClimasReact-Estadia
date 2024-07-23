@@ -4,7 +4,7 @@ import '../../CSS/Mision.css'; // Asegúrate de importar el archivo CSS
 const Mision = () => {
   return (
     <div className="mision-background">
-      <div className="container mt-4 mision-content">
+      <div className="container mision-content">
         <h2>Nuestra Misión</h2>
         <p>
           Nuestra misión es implementar un sistema integral de control y monitoreo centralizado del aire climatizado en la Universidad Tecnológica de la Huasteca Hidalguense (UTHH), con el propósito de optimizar el consumo de energía y mejorar la gestión de recursos. Nos comprometemos a desarrollar una solución tecnológica innovadora que permita:

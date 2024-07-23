@@ -4,7 +4,7 @@ import '../../CSS/Vision.css'; // Asegúrate de importar el archivo CSS
 const Vision = () => {
   return (
     <div className="vision-background">
-      <div className="container mt-4 vision-content">
+      <div className="container vision-content">
         <h2>Nuestra Visión</h2>
         <p>
           Nos visualizamos como líderes en la implementación de soluciones tecnológicas avanzadas para la gestión del aire climatizado en entornos educativos. En la Universidad Tecnológica de la Huasteca Hidalguense (UTHH), aspiramos a ser reconocidos por:

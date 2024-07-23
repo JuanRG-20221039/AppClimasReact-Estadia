@@ -183,7 +183,7 @@ export default function Edificios() {
           <tr>
             {/* <th className='id'>Numero</th> */}
             <th className='name'>Nombre</th>
-            <th>Imagen</th>
+            {/* <th>Imagen</th> */}
             <th className='acciones'>Acciones</th>
           </tr>
         </thead>
@@ -191,8 +191,8 @@ export default function Edificios() {
           {edificios.map(edificio => (
             <tr key={edificio.Id_edificio}>
               {/* <td>{edificio.Id_edificio}</td> */}
-              <td>{edificio.Nombre_edificio}</td>
-              <td>{edificio.Imagen}</td>
+              <td>Edificio - {edificio.Nombre_edificio}</td>
+              {/* <td>{edificio.Imagen}</td> */}
               <td>
                 <button className="btn btn-success btn1 botonS" onClick={() => handleEdit(edificio.Id_edificio)}>Editar</button>
                 <button className="btn btn-danger botonD" onClick={() => handleDelete(edificio.Id_edificio)}>Eliminar</button>
@@ -218,7 +218,7 @@ export default function Edificios() {
                 onChange={handleInputChange}
               />
             </Form.Group>
-            <Form.Group controlId="formImagen">
+            {/* <Form.Group controlId="formImagen">
               <Form.Label>Imagen</Form.Label>
               <Form.Control
                 type="text"
@@ -226,7 +226,7 @@ export default function Edificios() {
                 value={modalData.Imagen}
                 onChange={handleInputChange}
               />
-            </Form.Group>
+            </Form.Group> */}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -255,7 +255,7 @@ export default function Edificios() {
                 onChange={handleNewEdificioInputChange}
               />
             </Form.Group>
-            <Form.Group controlId="formNuevaImagen">
+            {/* <Form.Group controlId="formNuevaImagen">
               <Form.Label>Imagen</Form.Label>
               <Form.Control
                 type="text"
@@ -263,7 +263,7 @@ export default function Edificios() {
                 value={newEdificioData.Imagen}
                 onChange={handleNewEdificioInputChange}
               />
-            </Form.Group>
+            </Form.Group> */}
           </Form>
         </Modal.Body>
         <Modal.Footer>

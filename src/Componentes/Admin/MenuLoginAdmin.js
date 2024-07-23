@@ -14,6 +14,8 @@ import ModulosIOT from './ComponentesMenuAdmin/ModulosIOT.js';
 import VinculacionIOT from './ComponentesMenuAdmin/VinculacionIOT.js';
 import Ubicaciones from './ComponentesMenuAdmin/Ubicaciones.js';
 import Horarios from './ComponentesMenuAdmin/Horarios.js';
+import CodigosClimas from './ComponentesMenuAdmin/CodigosClimas.js'
+import Permisos from './ComponentesMenuAdmin/Permisos.js';
 
 const MenuLoginAdmin = () => {
   return (
@@ -28,8 +30,10 @@ const MenuLoginAdmin = () => {
           <Route path="admin-modulos-iot" element={<ModulosIOT />} />
           <Route path="admin-vinculacion-iot" element={<VinculacionIOT />} />
           <Route path="admin-climas" element={<Climas />} />
+          <Route path="admin-codigos" element={<CodigosClimas />} />
           <Route path="admin-climas-ubicaciones" element={<Ubicaciones />} />
           <Route path="admin-reportes" element={<Reportes />} />
+          <Route path="admin-permisos" element={<Permisos />} />
           <Route path="admin-historial" element={<Historial />} />
           <Route path="*" element={<Edificios />} />
         </Routes>

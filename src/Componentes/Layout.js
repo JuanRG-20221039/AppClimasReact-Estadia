@@ -44,8 +44,8 @@ const Inicio = () => {
         <Route path="/registro" element={<Registro />} />
         {loggedIn && (
           <>
-            <Route path="/menu" element={<MenuLoginUser />} />
-            <Route path="/reportar" element={<ReportesUser />} />
+            <Route path="/menu" element={<MenuLoginUser idClaveTrabajador={idClaveTrabajador} />} />
+            <Route path="/reportar" element={<ReportesUser idClaveTrabajador={idClaveTrabajador} />} />
             {/* Pasar el Id_clave_trabajador como prop a PerfilUser */}
             <Route path="/perfil" element={<PerfilUser idClaveTrabajador={idClaveTrabajador} />} />
             {/* RUTAS PARA ADMINISTRADOR */}

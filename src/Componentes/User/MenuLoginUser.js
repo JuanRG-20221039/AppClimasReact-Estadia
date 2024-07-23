@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Container, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
-import '../../CSS/StyleGeneralAdmin.css'
-import '../../CSS/MenuLoginUser.css'
+import '../../CSS/StyleGeneralAdmin.css';
+import '../../CSS/MenuLoginUser.css';
 
-export default function MenuLogin() {
+export default function MenuLogin({ idClaveTrabajador }) {
   const [edificios, setEdificios] = useState([]);
   const [aulas, setAulas] = useState([]);
   const [climaInfo, setClimaInfo] = useState(null);
@@ -15,7 +15,7 @@ export default function MenuLogin() {
   const [isClimaOn, setIsClimaOn] = useState(false);
   const [showNoClimaAlert, setShowNoClimaAlert] = useState(false);
   const [idPlacaPrincipal, setIdPlacaPrincipal] = useState(null);
-
+  
   useEffect(() => {
     axios.get('http://localhost:8000/edificios')
       .then(response => setEdificios(response.data))
@@ -37,7 +37,7 @@ export default function MenuLogin() {
 
   useEffect(() => {
     if (selectedAula) {
-      axios.get(`http://localhost:8000/ubicaciones_climas/aula/${selectedAula}`)
+      axios.get(`http://localhost:8000/ubicaciones-climas/aula/${selectedAula}`)
         .then(response => {
           const climaId = response.data[0]?.Id_clima;
           if (climaId) {
@@ -49,18 +49,18 @@ export default function MenuLogin() {
                 const idVinculacionIot = response.data.Id_vinculacion_iot;
 
                 axios.get(`http://localhost:8000/vinculacion/${idVinculacionIot}`)
-                .then(response => {
-                  const idPlacaPrincipal = response.data.Id_placa_principal;
-                  setIdPlacaPrincipal(idPlacaPrincipal);
-              
-                  axios.get(`http://localhost:8000/iot/${idPlacaPrincipal}`)
-                    .then(response => {
-                      const estadoClima = response.data.Estado_clima;
-                      setIsClimaOn(estadoClima === 1);
-                    })
-                    .catch(error => console.error('Error fetching Estado_clima:', error));
-                })
-                .catch(error => console.error('Error fetching Id_placa_principal:', error));              
+                  .then(response => {
+                    const idPlacaPrincipal = response.data.Id_placa_principal;
+                    setIdPlacaPrincipal(idPlacaPrincipal);
+
+                    axios.get(`http://localhost:8000/iot/${idPlacaPrincipal}`)
+                      .then(response => {
+                        const estadoClima = response.data.Estado_clima;
+                        setIsClimaOn(estadoClima === 1);
+                      })
+                      .catch(error => console.error('Error fetching Estado_clima:', error));
+                  })
+                  .catch(error => console.error('Error fetching Id_placa_principal:', error));
 
                 return response.data.Id_marca;
               })
@@ -98,7 +98,18 @@ export default function MenuLogin() {
   
     if (idPlacaPrincipal) {
       axios.put(`http://localhost:8000/iot/${idPlacaPrincipal}`, { Estado_clima: newState })
-        .then(() => setIsClimaOn(!isClimaOn))
+        .then(() => {
+          setIsClimaOn(!isClimaOn);
+          const accionRealizada = newState === 1 ? 'ENCENDIDO' : 'APAGADO';
+          const fechaHora = new Date().toISOString();
+          axios.post('http://localhost:8000/historial-acceso', {
+            Id_clave_trabajador: idClaveTrabajador,
+            Id_Clima: climaInfo?.Id_clima,
+            Accion_realizada: accionRealizada,
+            Fecha_Hora: fechaHora
+          })
+          .catch(error => console.error('Error saving historial de acceso:', error));
+        })
         .catch(error => console.error('Error updating Estado_clima:', error));
     }
   };  
@@ -109,7 +120,7 @@ export default function MenuLogin() {
       <Row className="mb-3 margen">
         <Col>
           <div className='tituloComponente'>
-            <h1>Panel de cotrol de climas</h1>
+            <h1>Panel de control de climas</h1>
           </div>
         </Col>
       </Row>

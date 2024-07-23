@@ -57,7 +57,7 @@ export default function Aulas() {
 
     try {
       // Consulta para verificar si hay ubicaciones climáticas asociadas al aula
-      const ubicacionesResponse = await axios.get(`http://localhost:8000/ubicaciones_climas/aula/${id}`);
+      const ubicacionesResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/aula/${id}`);
       if (ubicacionesResponse.data && ubicacionesResponse.data.length > 0) {
         alert('No se puede eliminar el aula porque tiene ubicaciones climáticas asociadas.');
         return;

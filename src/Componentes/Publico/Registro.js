@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 import md5 from 'md5'; // Importar la biblioteca de MD5
 import '../../CSS/Registro.css'
@@ -29,6 +30,11 @@ const Registro = () => {
     event.preventDefault();
     if (contrasena !== confirmarContrasena) {
       alert('Las contraseñas no coinciden.');
+      return;
+    }
+
+    if (contrasena.length < 8 || contrasena.length > 12){
+      alert('La contraseña tiene que contener de 8 a 12 caracteres.');
       return;
     }
 
@@ -110,26 +116,42 @@ const Registro = () => {
             <label htmlFor="nombre" className="form-label">Nombre:</label>
             <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
           </div>
-          <div className="mb-3">
-            <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno:</label>
-            <input type="text" className="form-control" id="apellidoPaterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="apellidoMaterno" className="form-label">Apellido Materno:</label>
-            <input type="text" className="form-control" id="apellidoMaterno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
-          </div>
+
+          <Row>
+            <Col>
+              <div className="mb-3">
+                <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno:</label>
+                <input type="text" className="form-control" id="apellidoPaterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
+              </div>
+            </Col>
+            <Col>
+              <div className="mb-3">
+                <label htmlFor="apellidoMaterno" className="form-label">Apellido Materno:</label>
+                <input type="text" className="form-control" id="apellidoMaterno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
+              </div>
+            </Col>
+          </Row>
+
           <div className="mb-3">
             <label htmlFor="correo" className="form-label">Correo Electrónico:</label>
             <input type="email" className="form-control" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
           </div>
-          <div className="mb-3">
-            <label htmlFor="contrasena" className="form-label">Contraseña:</label>
-            <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
-            <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
-          </div>
+
+          <Row>
+            <Col>
+              <div className="mb-3">
+                <label htmlFor="contrasena" className="form-label">Contraseña:</label>
+                <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
+              </div>
+            </Col>
+            <Col>
+              <div className="mb-3">
+                <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
+                <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
+              </div>
+            </Col>
+          </Row>
+
           <button type="submit" className="btn btn-primary buttonS">Registrarse</button>
         </form>
       </div>

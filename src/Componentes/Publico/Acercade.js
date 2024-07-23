@@ -4,7 +4,7 @@ import '../../CSS/Acercade.css'; // Asegúrate de importar el archivo CSS
 const Acercade = () => {
   return (
     <div className="acercade-background">
-      <div className="container mt-4 acercade-content">
+      <div className="container acercade-content">
         <h2>Acerca de la Universidad Tecnológica de la Huasteca Hidalguense (UTHH)</h2>
         <p>
           La Universidad Tecnológica de la Huasteca Hidalguense (UTHH) es una institución educativa que ofrece una alternativa de estudios para egresados de escuelas con nivel medio superior, formando Técnicos Superiores Universitarios (TSU) así como niveles de licenciatura e ingeniería.

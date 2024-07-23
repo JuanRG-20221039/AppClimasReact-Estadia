@@ -50,7 +50,7 @@ export default function Historial() {
             {/* <th>ID Historial</th> */}
             <th>Clave Trabajador</th>
             <th>Nombre del Trabajador</th>
-            <th>Clima (No. Registro)</th>
+            <th>Clima</th>
             <th>Acción Realizada</th>
             <th>Fecha y Hora</th>
           </tr>
