@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Table, Modal } from 'react-bootstrap';
 
+import '../../../CSS/StyleGeneralAdmin.css'
+
 const UpdateWorkerRole = () => {
   const [workers, setWorkers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -15,6 +17,8 @@ const UpdateWorkerRole = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState(null);
+  const [profiles, setProfiles] = useState([]);
+  const [selectedProfile, setSelectedProfile] = useState('');
 
   // Fetch workers, roles, and buildings data on component mount
   useEffect(() => {
@@ -23,12 +27,11 @@ const UpdateWorkerRole = () => {
         const workersResponse = await axios.get('http://localhost:8000/trabajadores');
         const rolesResponse = await axios.get('http://localhost:8000/tiposTrabajadores');
         const buildingsResponse = await axios.get('http://localhost:8000/edificios');
+        const profilesResponse = await axios.get('http://localhost:8000/perfiles');
         setWorkers(workersResponse.data);
         setRoles(rolesResponse.data);
         setBuildings(buildingsResponse.data);
-
-      // Agregar log para verificar los datos de edificios
-      console.log('Buildings fetched:', buildingsResponse.data);
+        setProfiles(profilesResponse.data);
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -44,6 +47,7 @@ const UpdateWorkerRole = () => {
     const worker = workers.find(worker => worker.Id_clave_trabajador === parseInt(selectedWorkerId));
     setSelectedWorker(selectedWorkerId);
     setSelectedRole(worker ? worker.tipo_trabajador : '');
+    setSelectedProfile(worker ? worker.id_perfil : '');
 
     // Fetch permissions for the selected worker
     try {
@@ -72,17 +76,20 @@ const UpdateWorkerRole = () => {
     setSelectedRole(e.target.value);
   };
 
+  // Handle profile change
+  const handleProfileChange = (e) => {
+    setSelectedProfile(e.target.value);
+  };
+
   const handleBuildingChange = async (e) => {
     const selectedBuildingId = parseInt(e.target.value, 10);  // Asegúrate de convertir a número
     setSelectedBuilding(selectedBuildingId);
-  
-    console.log('Selected Building ID:', selectedBuildingId);
   
     try {
       const classroomsResponse = await axios.get(`http://localhost:8000/aulas/edificio/${selectedBuildingId}`);
       setClassrooms(classroomsResponse.data);
       
-      console.log('Classrooms fetched:', classroomsResponse.data);
+      //console.log('Classrooms fetched:', classroomsResponse.data);
     } catch (error) {
       console.error('Error fetching classrooms:', error);
     }
@@ -93,18 +100,18 @@ const UpdateWorkerRole = () => {
     setSelectedClassroom(e.target.value);
   };
 
-  // Update worker role
   const handleUpdateRole = async () => {
     try {
       await axios.put(`http://localhost:8000/trabajadores/${selectedWorker}`, {
-        tipo_trabajador: selectedRole
+        tipo_trabajador: selectedRole,
+        id_perfil: selectedProfile
       });
-      alert('¡Rol actualizado con éxito!');
+      alert('¡Rol y perfil actualizados con éxito!');
     } catch (error) {
-      console.error('Error updating role:', error);
-      alert('Error al actualizar el rol.');
+      console.error('Error updating role and profile:', error);
+      alert('Error al actualizar el rol y perfil.');
     }
-  };
+  };  
 
   // Add permission for the selected classroom
   const handleAddPermission = async () => {
@@ -206,8 +213,9 @@ const UpdateWorkerRole = () => {
 
   return (
     <Container>
-      <h1>Actualizar Rol del Trabajador</h1>
+      <h1 className='tituloComponente'>Actualizar Permisos del Trabajador</h1>
       <Form>
+        <h2>Tipo y Rol de trabajador</h2>
         <Row className="align-items-center">
           <Col md={4}>
             <Form.Group controlId="formWorker">
@@ -224,8 +232,9 @@ const UpdateWorkerRole = () => {
           </Col>
           <Col md={4}>
             <Form.Group controlId="formRole">
-              <Form.Label>Rol Actual</Form.Label>
+              <Form.Label>Tipo de trabajador</Form.Label>
               <Form.Control as="select" onChange={handleRoleChange} value={selectedRole}>
+                <option value="">Selecciona un tipo</option>
                 {roles.map(role => (
                   <option key={role.Id_tipo_de_trabajador} value={role.Id_tipo_de_trabajador}>
                     {role.Tipo_trabajador}
@@ -235,15 +244,29 @@ const UpdateWorkerRole = () => {
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Button variant="primary" onClick={handleUpdateRole} className="w-100">
-              Actualizar Rol
-            </Button>
+            <Form.Group controlId="formProfile">
+              <Form.Label>Rol del acceso</Form.Label>
+              <Form.Control as="select" onChange={handleProfileChange} value={selectedProfile}>
+                <option value="">Selecciona un rol</option>
+                {profiles.map(profile => (
+                  <option key={profile.Id_perfil} value={profile.Id_perfil}>
+                    {profile.perfil}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
           </Col>
         </Row>
+        <Col>
+          <Button variant="primary" onClick={handleUpdateRole} className="w-100 botonC" style={{marginTop:50}} >
+            Actualizar Permisos
+          </Button>
+        </Col>
 
         {selectedWorker && (
           <>
             <Row className="mt-4 align-items-center">
+            <h2>Permisos Para el control de Climas</h2>
               <Col md={4}>
                 <Form.Group controlId="formBuilding">
                   <Form.Label>Selecciona el Edificio</Form.Label>
@@ -266,11 +289,11 @@ const UpdateWorkerRole = () => {
                       const building = buildings.find(b => b.Id_edificio === selectedBuilding);
 
                       // Verificar que el edificio se encontró
-                      console.log('Building for selected building ID:', building);
+                      //console.log('Building for selected building ID:', building);
                       
                       const buildingName = building ? building.Nombre_edificio : 'Desconocido';
                       
-                      console.log('Classroom:', classroom);
+                      //console.log('Classroom:', classroom);
                       
                       return (
                         <option key={classroom.Id_aula} value={classroom.Id_aula}>
@@ -282,13 +305,12 @@ const UpdateWorkerRole = () => {
                 </Form.Group>
               </Col>
               <Col md={4}>
-                <Button variant="primary" onClick={handleAddPermission} className="w-100">
+                <Button variant="primary" onClick={handleAddPermission} className="w-100 botonC" style={{marginTop:50}}>
                   Agregar Permiso
                 </Button>
               </Col>
             </Row>
 
-            <h2 className="mt-4">Permisos del Trabajador</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -303,7 +325,7 @@ const UpdateWorkerRole = () => {
                       Clima {permission.edificio.Nombre_edificio} {permission.aula.Nombre_aula}
                     </td>
                     <td>
-                      <Button variant="danger" onClick={() => {
+                      <Button className='botonD' variant="danger" onClick={() => {
                         setPermissionToDelete(permission.Id_permiso);
                         setShowDeleteModal(true);
                       }}>
@@ -314,7 +336,7 @@ const UpdateWorkerRole = () => {
                 ))}
               </tbody>
             </Table>
-            <Button variant="danger" onClick={() => setShowDeleteAllModal(true)}>
+            <Button className='botonD' variant="danger" onClick={() => setShowDeleteAllModal(true)}>
               Eliminar Todos los Permisos
             </Button>
           </>
@@ -328,10 +350,10 @@ const UpdateWorkerRole = () => {
         </Modal.Header>
         <Modal.Body>¿Estás seguro de que deseas eliminar este permiso?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+          <Button className='botonM botonMCC' variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={handleDeletePermission}>
+          <Button className='botonM botonMC' variant="danger" onClick={handleDeletePermission}>
             Eliminar
           </Button>
         </Modal.Footer>
@@ -344,10 +366,10 @@ const UpdateWorkerRole = () => {
         </Modal.Header>
         <Modal.Body>¿Estás seguro de que deseas eliminar todos los permisos para este trabajador?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteAllModal(false)}>
+          <Button className='botonM botonMCC' variant="secondary" onClick={() => setShowDeleteAllModal(false)}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={handleDeleteAllPermissions}>
+          <Button className='botonM botonMC' variant="danger" onClick={handleDeleteAllPermissions}>
             Eliminar Todos
           </Button>
         </Modal.Footer>
