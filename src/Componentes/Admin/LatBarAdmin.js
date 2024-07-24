@@ -19,6 +19,7 @@ const LatBarAdmin = () => {
           <li><NavLink to="admin-reportes" activeClassName="active">Bandeja de Reportes</NavLink></li>
           <li><NavLink to="admin-permisos" activeClassName="active">Permisos de Usuarios</NavLink></li>
           <li><NavLink to="admin-historial" activeClassName="active">Historial de Acceso</NavLink></li>
+          <li><NavLink to="admin-historialIOT" activeClassName="active">Historial IOT</NavLink></li>
         </ul>
       </nav>
     </aside>

@@ -16,6 +16,7 @@ import Ubicaciones from './ComponentesMenuAdmin/Ubicaciones.js';
 import Horarios from './ComponentesMenuAdmin/Horarios.js';
 import CodigosClimas from './ComponentesMenuAdmin/CodigosClimas.js'
 import Permisos from './ComponentesMenuAdmin/Permisos.js';
+import HistoricoIOT from './ComponentesMenuAdmin/HistoricoIOT.js';
 
 const MenuLoginAdmin = () => {
   return (
@@ -35,6 +36,7 @@ const MenuLoginAdmin = () => {
           <Route path="admin-reportes" element={<Reportes />} />
           <Route path="admin-permisos" element={<Permisos />} />
           <Route path="admin-historial" element={<Historial />} />
+          <Route path="admin-historialIOT" element={<HistoricoIOT />} />
           <Route path="*" element={<Edificios />} />
         </Routes>
       </main>
