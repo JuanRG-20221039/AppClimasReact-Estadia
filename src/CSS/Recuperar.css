@@ -1,0 +1,32 @@
+.registro-background {
+    background-image: url('../../public/IMG/Uthh.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Ajusta la altura según sea necesario */
+    overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+}
+
+.CardContainer{
+    margin: 80px;
+    padding-bottom: 10%;
+}
+
+.cardSombreado{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.cardTitulo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonS{
+    background-color: #00883E!important;
+    border: none!important;
+    width: 200px;
+    height: 40px;
+}
+.buttonS:hover{
+    background-color: #1fb160!important;
+}

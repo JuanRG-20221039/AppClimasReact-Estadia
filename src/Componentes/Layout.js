@@ -10,6 +10,7 @@ import Registro from './Publico/Registro';
 import PerfilUser from './User/PerfilUser';
 import ReportesUser from './User/ReportesUser';
 import MenuLoginAdmin from './Admin/MenuLoginAdmin'; // Importa MenuLoginAdmin
+import Recuperar from './Publico/Recuperar';
 
 import '../CSS/Layout.css'
 
@@ -42,6 +43,7 @@ const Inicio = () => {
         <Route path="/vision" element={<Vision />} />
         <Route path="/acercade" element={<Acercade />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/recuperar" element={<Recuperar />} />
         {loggedIn && (
           <>
             <Route path="/menu" element={<MenuLoginUser idClaveTrabajador={idClaveTrabajador} />} />

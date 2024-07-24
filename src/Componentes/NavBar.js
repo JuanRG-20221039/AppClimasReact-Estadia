@@ -27,6 +27,7 @@ const NavBar = ({ loggedIn, role, handleLogout }) => {
               <li className="nav-item"><Link to="/vision">Visión</Link></li>
               <li className="nav-item"><Link to="/acercade">UTHH</Link></li>
               <li className="nav-item"><Link to="/registro">Registro</Link></li>
+              <li className="nav-item"><Link to="/recuperar">Recuperar Contraseña</Link></li>
             </>
           )}
         </ul>

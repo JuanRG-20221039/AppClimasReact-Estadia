@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Col, Row, Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import md5 from 'md5'; // Importar la biblioteca de MD5
 import '../../CSS/Registro.css'
@@ -11,7 +11,14 @@ const Registro = () => {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
-
+  const [preguntas, setPreguntas] = useState([]);
+  const [preguntaSeleccionada, setPreguntaSeleccionada] = useState('');
+  const [respuestaSecreta, setRespuestaSecreta] = useState('');
+  const [confirmarRespuestaSecreta, setConfirmarRespuestaSecreta] = useState('');
+  
+  const [showModal, setShowModal] = useState(false); // Estado para el modal
+  const [trabajadorId, setTrabajadorId] = useState(null); // Estado para el ID del trabajador
+  
   // Función para verificar si el correo ya está registrado
   const verificarCorreoRegistrado = async () => {
     try {
@@ -26,58 +33,113 @@ const Registro = () => {
     }
   };
 
+  // Función para obtener las preguntas secretas
+  const obtenerPreguntas = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/preguntas');
+      setPreguntas(response.data);
+    } catch (error) {
+      console.error('Error al obtener las preguntas:', error);
+    }
+  };
+
+  // Función para enviar la respuesta secreta
+  const enviarRespuestaSecreta = async () => {
+    try {
+      const respuestaSecretaEnMinusculas = respuestaSecreta.toLowerCase();
+      const nuevaRespuesta = {
+        Id_clave_trabajador: trabajadorId,
+        Id_pregunta: preguntaSeleccionada,
+        Respuesta: respuestaSecretaEnMinusculas
+      };
+
+      console.log('Enviando datos:', nuevaRespuesta); // Para depuración
+
+      const response = await axios.post('http://localhost:8000/respuestas', nuevaRespuesta);
+      console.log('Respuesta del servidor:', response.data);
+    } catch (error) {
+      console.error('Error al registrar la respuesta secreta:', error.response ? error.response.data : error.message);
+      alert('Hubo un error al registrar la respuesta secreta. Por favor, inténtalo de nuevo.');
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    console.log('Iniciando el registro del trabajador.');
+  
+    // Validaciones del formulario
     if (contrasena !== confirmarContrasena) {
       alert('Las contraseñas no coinciden.');
       return;
     }
-
-    if (contrasena.length < 8 || contrasena.length > 12){
-      alert('La contraseña tiene que contener de 8 a 12 caracteres.');
+  
+    if (contrasena.length < 8 || contrasena.length > 12) {
+      alert('La contraseña debe contener entre 8 y 12 caracteres.');
       return;
     }
-
+  
+    if (respuestaSecreta !== confirmarRespuestaSecreta) {
+      alert('Las respuestas secretas no coinciden.');
+      return;
+    }
+  
     try {
+      console.log('Verificando si el correo ya está registrado.');
       // Verificar si el correo ya está registrado
       const correoRegistrado = await verificarCorreoRegistrado();
+      console.log('Correo verificado:', correoRegistrado);
+  
       if (correoRegistrado) {
         alert('El correo electrónico ya está registrado. Por favor, utiliza otro correo.');
         return;
       }
-
-      let claveGenerada = await generateUniqueKey(); // Obtener clave única válida
-
-      // Encriptar la contraseña usando MD5
-      const contrasenaEncriptada = md5(contrasena);
-
+  
+      console.log('Generando clave única para el trabajador.');
+      // Generar clave única para el trabajador
+      let claveGenerada = await generateUniqueKey();
+      console.log('Clave generada:', claveGenerada);
+  
+      // Registrar al trabajador
       const nuevoTrabajador = {
         Nombre_del_trabajador: nombre,
         Apellido_paterno: apellidoPaterno,
         Apellido_materno: apellidoMaterno,
         tipo_trabajador: 4, // Asignar por defecto el id 4
-        Contraseña: contrasenaEncriptada, // Usar la contraseña encriptada
+        Contraseña: md5(contrasena), // Usar la contraseña encriptada
         Correo: correo,
         id_perfil: 2, // Asignar por defecto el id 2
         Clave_trabajador: claveGenerada
       };
-
+  
+      console.log('Registrando al trabajador:', nuevoTrabajador);
       const registroResponse = await axios.post('http://localhost:8000/trabajadores', nuevoTrabajador);
-      console.log('Respuesta del servidor:', registroResponse.data);
-
-      // Limpia los campos después del envío exitoso
+      console.log('Respuesta del registro del trabajador:', registroResponse.data);
+  
+      // Verificar que el trabajador fue registrado correctamente
+      const trabajadorRegistrado = await axios.get(`http://localhost:8000/trabajadores/clave/${claveGenerada}`);
+      console.log('Respuesta de la verificación del trabajador:', trabajadorRegistrado.data);
+  
+      if (!trabajadorRegistrado.data) {
+        throw new Error('El trabajador no fue encontrado después del registro.');
+      }
+  
+      // Guardar el ID del trabajador registrado para usarlo en el modal
+      setTrabajadorId(trabajadorRegistrado.data.Id_clave_trabajador);
+  
+      // Mostrar el modal para la pregunta secreta
+      setShowModal(true);
+  
+      // Limpiar los campos después del envío exitoso
       setNombre('');
       setApellidoPaterno('');
       setApellidoMaterno('');
       setCorreo('');
       setContrasena('');
       setConfirmarContrasena('');
-      alert('Registro exitoso');
     } catch (error) {
-      if (error.response && error.response.status !== 404) {
-        console.error('Error al registrar trabajador:', error);
-        alert('Hubo un error al registrar el trabajador. Por favor, inténtalo de nuevo.');
-      }
+      console.error('Error al registrar trabajador o respuesta secreta:', error.response ? error.response.data : error.message);
+      alert('Hubo un error al registrar el trabajador o la respuesta secreta. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -105,12 +167,34 @@ const Registro = () => {
     }
   };
 
+  // Cargar las preguntas secretas cuando se monta el componente
+  useEffect(() => {
+    obtenerPreguntas();
+  }, []);
+
+  // Función para manejar el envío de la respuesta secreta desde el modal
+  const handleSubmitSecreta = async () => {
+    if (respuestaSecreta !== confirmarRespuestaSecreta) {
+      alert('Las respuestas secretas no coinciden.');
+      return;
+    }
+
+    try {
+      await enviarRespuestaSecreta();
+      setShowModal(false); // Ocultar el modal después de enviar
+      alert('Registro y respuesta secreta enviados exitosamente.');
+    } catch (error) {
+      console.error('Error al registrar la respuesta secreta desde el modal:', error.response ? error.response.data : error.message);
+      alert('Hubo un error al registrar la respuesta secreta desde el modal. Por favor, inténtalo de nuevo.');
+    }
+  };
+
   return (
     <div className="registro-background">
       <div className="container registro-content">
         <h2 className="mt-4">Registro</h2>
         <p>Ingrese los datos solicitados para completar correctamente su registro dentro del sistema de control de climas de la uthh.</p>
-        <hr/>
+        <hr />
         <form onSubmit={handleSubmit} className="mt-4">
           <div className="mb-3">
             <label htmlFor="nombre" className="form-label">Nombre:</label>
@@ -152,9 +236,44 @@ const Registro = () => {
             </Col>
           </Row>
 
-          <button type="submit" className="btn btn-primary buttonS">Registrarse</button>
+          <button type="submit" className="btn btn-primary buttonS">Registrar Trabajador</button>
         </form>
       </div>
+
+      {/* Modal para la respuesta secreta */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Respuesta Secreta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¡Es necesario que complete este apartado ya que de lo contrario no podra recuperar su cuenta!</p>
+          <div className="mb-3">
+            <label htmlFor="preguntaSecreta" className="form-label">Pregunta Secreta:</label>
+            <select className="form-select" id="preguntaSecreta" value={preguntaSeleccionada} onChange={(e) => setPreguntaSeleccionada(e.target.value)} required>
+              <option value="">Selecciona una pregunta</option>
+              {preguntas.map((pregunta) => (
+                <option key={pregunta.Id_pregunta} value={pregunta.Id_pregunta}>{pregunta.Pregunta}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="respuestaSecreta" className="form-label">Respuesta Secreta:</label>
+            <input type="text" className="form-control" id="respuestaSecreta" value={respuestaSecreta} onChange={(e) => setRespuestaSecreta(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="confirmarRespuestaSecreta" className="form-label">Confirmar Respuesta Secreta:</label>
+            <input type="text" className="form-control" id="confirmarRespuestaSecreta" value={confirmarRespuestaSecreta} onChange={(e) => setConfirmarRespuestaSecreta(e.target.value)} required />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancelar
+          </Button>
+          <Button className='buttonS' variant="primary" onClick={handleSubmitSecreta}>
+            Enviar Respuesta
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
