@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Form, Row, Col, Alert } from 'react-bootstrap';
+import { Button, Container, Form, Row, Col, Alert, Modal } from 'react-bootstrap';
 import axios from 'axios';
 
 import '../../CSS/StyleGeneralAdmin.css';
@@ -14,8 +14,9 @@ export default function MenuLogin({ idClaveTrabajador }) {
   const [selectedAula, setSelectedAula] = useState('');
   const [isClimaOn, setIsClimaOn] = useState(false);
   const [showNoClimaAlert, setShowNoClimaAlert] = useState(false);
+  const [showOutOfHoursAlert, setShowOutOfHoursAlert] = useState(false);
   const [idPlacaPrincipal, setIdPlacaPrincipal] = useState(null);
-  
+
   useEffect(() => {
     axios.get('http://localhost:8000/edificios')
       .then(response => setEdificios(response.data))
@@ -95,24 +96,45 @@ export default function MenuLogin({ idClaveTrabajador }) {
 
   const handleClimaToggle = () => {
     const newState = isClimaOn ? 0 : 1;
-  
-    if (idPlacaPrincipal) {
-      axios.put(`http://localhost:8000/iot/${idPlacaPrincipal}`, { Estado_clima: newState })
-        .then(() => {
-          setIsClimaOn(!isClimaOn);
-          const accionRealizada = newState === 1 ? 'ENCENDIDO' : 'APAGADO';
-          const fechaHora = new Date().toISOString();
-          axios.post('http://localhost:8000/historial-acceso', {
-            Id_clave_trabajador: idClaveTrabajador,
-            Id_Clima: climaInfo?.Id_clima,
-            Accion_realizada: accionRealizada,
-            Fecha_Hora: fechaHora
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+    const currentDay = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    const horaAct = `H${currentHour}`;
+    const diaAct = currentDay; // Convert to 1-based index
+
+    axios.get(`http://localhost:8000/horas/buscar/${horaAct}`)
+      .then(response => {
+        const idHora = response.data.Id_horas;
+
+        axios.get(`http://localhost:8000/horarios/${selectedAula}/${idHora}/${diaAct}`)
+          .then(() => {
+            // Horario válido, procede a encender o apagar el clima
+            if (idPlacaPrincipal) {
+              axios.put(`http://localhost:8000/iot/${idPlacaPrincipal}`, { Estado_clima: newState })
+                .then(() => {
+                  setIsClimaOn(!isClimaOn);
+                  const accionRealizada = newState === 1 ? 'ENCENDIDO' : 'APAGADO';
+                  const fechaHora = new Date().toISOString();
+                  axios.post('http://localhost:8000/historial-acceso', {
+                    Id_clave_trabajador: idClaveTrabajador,
+                    Id_Clima: climaInfo?.Id_clima,
+                    Accion_realizada: accionRealizada,
+                    Fecha_Hora: fechaHora
+                  })
+                  .catch(error => console.error('Error saving historial de acceso:', error));
+                })
+                .catch(error => console.error('Error updating Estado_clima:', error));
+            }
           })
-          .catch(error => console.error('Error saving historial de acceso:', error));
-        })
-        .catch(error => console.error('Error updating Estado_clima:', error));
-    }
-  };  
+          .catch(error => {
+            // Error 404, el clima no está disponible en este horario y día
+            setShowOutOfHoursAlert(true);
+            console.error('El clima no está disponible en esta hora y día:', error);
+          });
+      })
+      .catch(error => console.error('Error fetching hora info:', error));
+  };
 
   return (
     <Container>
@@ -156,6 +178,19 @@ export default function MenuLogin({ idClaveTrabajador }) {
             <Alert variant="warning" className='margenAlert' onClose={() => setShowNoClimaAlert(false)} dismissible>
               Este salón no tiene un clima asignado.
             </Alert>
+          )}
+          {showOutOfHoursAlert && (
+            <Modal show={showOutOfHoursAlert} onHide={() => setShowOutOfHoursAlert(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Horario No Disponible</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>El clima no está disponible en esta hora y día.</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowOutOfHoursAlert(false)}>
+                  Cerrar
+                </Button>
+              </Modal.Footer>
+            </Modal>
           )}
           {climaInfo && marca && (
             <div className="p-3 border rounded cardClima">
