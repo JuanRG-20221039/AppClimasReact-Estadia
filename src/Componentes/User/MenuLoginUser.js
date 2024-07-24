@@ -7,7 +7,8 @@ import '../../CSS/MenuLoginUser.css';
 
 export default function MenuLogin({ idClaveTrabajador }) {
   const [edificios, setEdificios] = useState([]);
-  const [aulas, setAulas] = useState([]);
+  //const [aulas, setAulas] = useState([]);
+  const [filteredAulas, setFilteredAulas] = useState([]);
   const [climaInfo, setClimaInfo] = useState(null);
   const [marca, setMarca] = useState(null);
   const [selectedEdificio, setSelectedEdificio] = useState('');
@@ -26,15 +27,40 @@ export default function MenuLogin({ idClaveTrabajador }) {
   useEffect(() => {
     if (selectedEdificio) {
       axios.get(`http://localhost:8000/aulas/edificio/${selectedEdificio}`)
-        .then(response => setAulas(response.data))
+        .then(response => {
+          // Obtener permisos del trabajador
+          axios.get(`http://localhost:8000/permisos/trabajador/${idClaveTrabajador}`)
+            .then(permisosResponse => {
+              const climaIds = permisosResponse.data.map(permiso => permiso.Id_clima);
+              
+              // Filtrar aulas según los climas permitidos
+              const fetchAulasPromises = climaIds.map(climaId => 
+                axios.get(`http://localhost:8000/ubicaciones-climas/clima/${climaId}`)
+              );
+
+              Promise.all(fetchAulasPromises)
+                .then(aulasResponses => {
+                  const aulasPermitidas = new Set();
+                  aulasResponses.forEach(response => {
+                    const aulaId = response.data.Id_aula;
+                    aulasPermitidas.add(aulaId);
+                  });
+
+                  const aulasFiltradas = response.data.filter(aula => aulasPermitidas.has(aula.Id_aula));
+                  setFilteredAulas(aulasFiltradas);
+                })
+                .catch(error => console.error('Error fetching ubicaciones-climas:', error));
+            })
+            .catch(error => console.error('Error fetching permisos:', error));
+        })
         .catch(error => console.error('Error fetching aulas:', error));
     } else {
-      setAulas([]);
+      setFilteredAulas([]);
       setSelectedAula('');
       setClimaInfo(null);
       setMarca(null);
     }
-  }, [selectedEdificio]);
+  }, [selectedEdificio, idClaveTrabajador]);
 
   useEffect(() => {
     if (selectedAula) {
@@ -165,7 +191,7 @@ export default function MenuLogin({ idClaveTrabajador }) {
             <Form.Label>Selecciona un aula</Form.Label>
             <Form.Control as="select" value={selectedAula} onChange={(e) => setSelectedAula(e.target.value)} disabled={!selectedEdificio}>
               <option value="">Selecciona un aula</option>
-              {aulas.map(aula => (
+              {filteredAulas.map(aula => (
                 <option key={aula.Id_aula} value={aula.Id_aula}>
                   {aula.Nombre_aula}
                 </option>
