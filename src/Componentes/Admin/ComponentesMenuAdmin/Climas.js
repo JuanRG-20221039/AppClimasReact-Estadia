@@ -19,6 +19,9 @@ export default function Climas() {
   const [voltaje, setVoltaje] = useState('');
   const [fechaIngreso, setFechaIngreso] = useState('');
 
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [climaToDelete, setClimaToDelete] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,6 +82,23 @@ export default function Climas() {
     setVoltaje('');
     setFechaIngreso('');
     setSelectedClima(null);
+  };
+
+  const handleShowConfirmDeleteModal = (clima) => {
+    setClimaToDelete(clima);
+    setShowConfirmDeleteModal(true);
+  };
+  
+  const handleCloseConfirmDeleteModal = () => {
+    setShowConfirmDeleteModal(false);
+    setClimaToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (climaToDelete) {
+      await handleDelete(climaToDelete.Id_clima);
+      handleCloseConfirmDeleteModal();
+    }
   };
 
   const handleRegistrarClima = async () => {
@@ -164,18 +184,32 @@ export default function Climas() {
   const handleDelete = async (id) => {
     try {
       const ubicacionesCheckResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${id}`);
-
+  
       if (ubicacionesCheckResponse.status === 200) {
         alert('El clima está asignado en alguna ubicación, no se puede eliminar.');
         return;
       }
-
-      const deleteResponse = await axios.delete(`http://localhost:8000/climas/${id}`);
-
-      if (deleteResponse.status === 200) {
+  
+      // Elimina los permisos relacionados con el clima
+      const deletePermisosResponse = await axios.delete(`http://localhost:8000/permisos/deleteAll/clima/${id}`);
+      if (deletePermisosResponse.status !== 200) {
+        console.error('Error al eliminar permisos:', deletePermisosResponse.data);
+        return;
+      }
+  
+      // Elimina el historial de acceso relacionado con el clima
+      const deleteHistorialResponse = await axios.delete(`http://localhost:8000/historial-acceso/deleteAll/clima/${id}`);
+      if (deleteHistorialResponse.status !== 200) {
+        console.error('Error al eliminar historial de acceso:', deleteHistorialResponse.data);
+        return;
+      }
+  
+      // Elimina el clima
+      const deleteClimaResponse = await axios.delete(`http://localhost:8000/climas/${id}`);
+      if (deleteClimaResponse.status === 200) {
         setClimas(climas.filter(clima => clima.Id_clima !== id));
       } else {
-        console.error('Error al eliminar clima:', deleteResponse.data);
+        console.error('Error al eliminar clima:', deleteClimaResponse.data);
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -193,7 +227,7 @@ export default function Climas() {
         console.error('Error verificando ubicaciones del clima:', error);
       }
     }
-  };
+  };  
 
   return (
     <div>
@@ -226,7 +260,7 @@ export default function Climas() {
               <td>Vinculación: {clima.Id_vinculacion_iot}</td>
               <td>
                 <Button variant="success botonS" className="btn btn-success" onClick={() => handleEdit(clima)}>Editar</Button>
-                <Button variant="danger botonD" className="btn btn-danger" onClick={() => handleDelete(clima.Id_clima)}>Eliminar</Button>
+                <Button variant="danger botonD" onClick={() => handleShowConfirmDeleteModal(clima)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -350,6 +384,26 @@ export default function Climas() {
           </Button>
           <Button variant="primary botonM botonMS" onClick={handleUpdateClima} disabled={!modelo || !selectedMarca || !capacidad || !voltaje || !fechaIngreso || !selectedVinculacion}>
             Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showConfirmDeleteModal} onHide={handleCloseConfirmDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            ¿Estás seguro de que deseas eliminar este clima? Esto también eliminará
+            todos los permisos y el historial de acceso relacionados con este clima.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className='botonM botonMCC' variant="secondary" onClick={handleCloseConfirmDeleteModal}>
+            Cancelar
+          </Button>
+          <Button className='botonM botonMC' variant="danger" onClick={handleConfirmDelete}>
+            Eliminar
           </Button>
         </Modal.Footer>
       </Modal>
