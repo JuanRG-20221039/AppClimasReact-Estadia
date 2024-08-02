@@ -30,12 +30,12 @@ export default function VinculacionIOT() {
         setVinculaciones(responseVinculaciones.data);
 
         const macPromises = responseVinculaciones.data.map(async (vinculacion) => {
-          const macPrincipal = await axios.get(`http://localhost:8000/iot/mac_id/${vinculacion.Id_placa_principal}`);
-          const macSecundaria = await axios.get(`http://localhost:8000/iot/mac_id/${vinculacion.Id_Placa_secundaria}`);
+          const macPrincipal = await axios.get(`http://localhost:8000/iot/alias_id/${vinculacion.Id_placa_principal}`);
+          const macSecundaria = await axios.get(`http://localhost:8000/iot/alias_id/${vinculacion.Id_Placa_secundaria}`);
           return {
             Id_vinculacion_iot: vinculacion.Id_vinculacion_iot,
-            Mac_principal: macPrincipal.data.Mac_dispositivo,
-            Mac_secundaria: macSecundaria.data.Mac_dispositivo
+            Mac_principal: macPrincipal.data.Alias_iot,
+            Mac_secundaria: macSecundaria.data.Alias_iot
           };
         });
 
@@ -154,12 +154,15 @@ export default function VinculacionIOT() {
       <Button variant="success botonC" onClick={handleCrearVinculacion} style={{ marginBottom: '20px' }}>
         Crear Vinculación
       </Button>
+      <hr/>
+      <p>El numero de vinculacion sera el valor que se asignara a la hora de crear un Clima, esto para enlazarlo con los modulo de IoT correspondientes.</p>
+      <hr/>
       <Table className="table table-striped">
         <thead>
           <tr>
             <th>Numero de Vinculación</th>
-            <th>Modulo Principal (MAC)</th>
-            <th>Modulo Secundario (MAC)</th>
+            <th>Modulo Principal (Alias)</th>
+            <th>Modulo Secundario (Alias)</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -218,7 +221,7 @@ export default function VinculacionIOT() {
                 <option value="">Selecciona una placa</option>
                 {placasDisponibles.map((placa) => (
                   <option key={placa.Id_iot} value={placa.Id_iot}>
-                    {placa.Mac_dispositivo}
+                    {placa.Alias_iot}
                   </option>
                 ))}
               </Form.Control>
@@ -239,7 +242,7 @@ export default function VinculacionIOT() {
                   )
                   .map((placa) => (
                     <option key={placa.Id_iot} value={placa.Id_iot}>
-                      {placa.Mac_dispositivo}
+                      {placa.Alias_iot}
                     </option>
                   ))}
               </Form.Control>

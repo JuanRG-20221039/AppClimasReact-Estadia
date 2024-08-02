@@ -77,3 +77,10 @@
 .margen{
     margin-top: 20px !important;
 }
+
+.botonC2{
+    background-color: #E9F7E8 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #747474 !important;
+}

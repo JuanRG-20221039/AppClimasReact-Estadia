@@ -235,6 +235,11 @@ export default function Climas() {
         <h2>Registro y Administración de Climas</h2>
       </div>
       <Button variant="primary botonC" onClick={handleShowCrearClimaModal}>Crear Nuevo Clima</Button>
+
+      <hr/>
+      <p>El numero de vinculacion sera el valor que se asignara a la hora de crear un Clima, esto para enlazarlo con los modulo de IoT correspondientes.</p>
+      <hr/>
+
       <table className="table table-striped">
         <thead>
           <tr>

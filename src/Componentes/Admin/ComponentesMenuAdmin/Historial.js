@@ -64,7 +64,7 @@ export default function Historial() {
           <tr>
             <th>Clave Trabajador</th>
             <th>Nombre del Trabajador</th>
-            <th>Clima</th>
+            <th>Clima y Aula</th>
             <th>Acción Realizada</th>
             <th>Fecha y Hora</th>
           </tr>

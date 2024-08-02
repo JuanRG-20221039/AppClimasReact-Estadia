@@ -17,6 +17,8 @@ import Horarios from './ComponentesMenuAdmin/Horarios.js';
 import CodigosClimas from './ComponentesMenuAdmin/CodigosClimas.js'
 import Permisos from './ComponentesMenuAdmin/Permisos.js';
 import HistoricoIOT from './ComponentesMenuAdmin/HistoricoIOT.js';
+import TiposAulas from './ComponentesMenuAdmin/TiposAulas.js';
+import TiposTrabajadores from './ComponentesMenuAdmin/TiposTrabajadores.js';
 
 const MenuLoginAdmin = () => {
   return (
@@ -25,6 +27,7 @@ const MenuLoginAdmin = () => {
       <main className="content"> {/* Aquí aplicamos el estilo para el scroll */}
         <Routes>
           <Route path="admin-edificios" element={<Edificios />} />
+          <Route path="admin-tipos-aulas" element={<TiposAulas />} />
           <Route path="admin-aulas" element={<Aulas />} />
           <Route path="admin-aulas-horarios" element={<Horarios />} />
           <Route path="admin-marcas" element={<Marcas />} />
@@ -34,6 +37,7 @@ const MenuLoginAdmin = () => {
           <Route path="admin-codigos" element={<CodigosClimas />} />
           <Route path="admin-climas-ubicaciones" element={<Ubicaciones />} />
           <Route path="admin-reportes" element={<Reportes />} />
+          <Route path="admin-tipos-trabajadores" element={<TiposTrabajadores />} />
           <Route path="admin-permisos" element={<Permisos />} />
           <Route path="admin-historial" element={<Historial />} />
           <Route path="admin-historialIOT" element={<HistoricoIOT />} />

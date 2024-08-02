@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Col, Row, Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import md5 from 'md5'; // Importar la biblioteca de MD5
+import { useNavigate } from 'react-router-dom';
+
 import '../../CSS/Registro.css'
 
 const Registro = () => {
@@ -15,10 +17,15 @@ const Registro = () => {
   const [preguntaSeleccionada, setPreguntaSeleccionada] = useState('');
   const [respuestaSecreta, setRespuestaSecreta] = useState('');
   const [confirmarRespuestaSecreta, setConfirmarRespuestaSecreta] = useState('');
+
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+  const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false);
   
   const [showModal, setShowModal] = useState(false); // Estado para el modal
   const [trabajadorId, setTrabajadorId] = useState(null); // Estado para el ID del trabajador
   
+  const navigate = useNavigate();
+
   // Función para verificar si el correo ya está registrado
   const verificarCorreoRegistrado = async () => {
     try {
@@ -183,11 +190,24 @@ const Registro = () => {
       await enviarRespuestaSecreta();
       setShowModal(false); // Ocultar el modal después de enviar
       alert('Registro y respuesta secreta enviados exitosamente.');
+      navigate('/');//redirecciona al inicio
     } catch (error) {
       console.error('Error al registrar la respuesta secreta desde el modal:', error.response ? error.response.data : error.message);
       alert('Hubo un error al registrar la respuesta secreta desde el modal. Por favor, inténtalo de nuevo.');
     }
   };
+
+  const limpiarFormulario = () => {
+    setNombre('');
+    setApellidoPaterno('');
+    setApellidoMaterno('');
+    setCorreo('');
+    setContrasena('');
+    setConfirmarContrasena('');
+    setPreguntaSeleccionada('');
+    setRespuestaSecreta('');
+    setConfirmarRespuestaSecreta('');
+  };  
 
   return (
     <div className="registro-background">
@@ -225,18 +245,56 @@ const Registro = () => {
             <Col>
               <div className="mb-3">
                 <label htmlFor="contrasena" className="form-label">Contraseña:</label>
-                <input type="password" className="form-control" id="contrasena" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
+                <div className="input-group">
+                  <input 
+                    type={mostrarContrasena ? "text" : "password"} 
+                    className="form-control" 
+                    id="contrasena" 
+                    value={contrasena} 
+                    onChange={(e) => setContrasena(e.target.value)} 
+                    required 
+                  />
+                  <button 
+                    type="button" 
+                    className="btn btn-outline-secondary btnOcltar" 
+                    onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                  >
+                    {mostrarContrasena ? "⚫" : "⚪"}
+                  </button>
+                </div>
               </div>
             </Col>
             <Col>
               <div className="mb-3">
                 <label htmlFor="confirmarContrasena" className="form-label">Confirmar Contraseña:</label>
-                <input type="password" className="form-control" id="confirmarContrasena" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)} required />
+                <div className="input-group">
+                  <input 
+                    type={mostrarConfirmarContrasena ? "text" : "password"} 
+                    className="form-control" 
+                    id="confirmarContrasena" 
+                    value={confirmarContrasena} 
+                    onChange={(e) => setConfirmarContrasena(e.target.value)} 
+                    required 
+                  />
+                  <button 
+                    type="button" 
+                    className="btn btn-outline-secondary btnOcltar" 
+                    onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
+                  >
+                    {mostrarConfirmarContrasena ? "⚫" : "⚪"}
+                  </button>
+                </div>
               </div>
             </Col>
           </Row>
 
-          <button type="submit" className="btn btn-primary buttonS">Registrar Trabajador</button>
+          <Row>
+            <Col>
+              <button type="submit" className="btn btn-primary buttonS">Registrar Trabajador</button>
+              <button type="button" className="btn btn-secondary buttonC" onClick={limpiarFormulario}>Limpiar Formulario</button>
+            </Col>
+          </Row>
+
         </form>
       </div>
 

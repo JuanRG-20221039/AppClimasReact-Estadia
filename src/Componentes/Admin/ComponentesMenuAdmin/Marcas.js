@@ -100,14 +100,21 @@ export default function Marcas() {
     try {
       // Convertir el nombre de la marca a mayúsculas
       const nombreEnMayusculas = currentMarca.Nombre_marca.toUpperCase();
-
-      // Verificar si la marca ya existe
-      const response = await axios.get(`http://localhost:8000/marcas/nombre/${nombreEnMayusculas}`);
-      if (response.status === 200) {
-        alert('La marca ya existe.');
-        return;
+  
+      try {
+        // Verificar si la marca ya existe
+        const response = await axios.get(`http://localhost:8000/marcas/nombre/${nombreEnMayusculas}`);
+        if (response.status === 200) {
+          alert('La marca ya existe.');
+          return;
+        }
+      } catch (error) {
+        // Ignorar el error 404 si la marca no existe, manejar otros errores
+        if (error.response && error.response.status !== 404) {
+          throw error; // Re-lanzar otros errores
+        }
       }
-
+  
       // Si no existe, proceder con la actualización
       await axios.put(`http://localhost:8000/marcas/${currentMarca.Id_marca}`, {
         ...currentMarca,
@@ -120,6 +127,7 @@ export default function Marcas() {
       alert('Error al actualizar la marca. Por favor, inténtelo de nuevo más tarde.');
     }
   };
+  
 
   return (
     <div>

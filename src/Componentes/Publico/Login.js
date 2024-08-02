@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import md5 from 'md5';
 import '../../CSS/Login.css';
 
 const Login = ({ handleLogin }) => {
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
@@ -56,7 +58,22 @@ const Login = ({ handleLogin }) => {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label">Contraseña</label>
-                    <input type="password" className="form-control" id="password" placeholder="Ingresa tu contraseña" required />
+                    <div className="input-group">
+                      <input 
+                        type={mostrarContrasena ? "text" : "password"} 
+                        className="form-control" 
+                        id="password" 
+                        placeholder="Ingresa tu contraseña" 
+                        required 
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-secondary btnOcltar" 
+                        onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                      >
+                        {mostrarContrasena ? "⚫" : "⚪"}
+                      </button>
+                    </div>
                   </div>
                   <button type="submit" className="btn btn-primary w-100 buttonS">Iniciar Sesión</button>
                 </form>

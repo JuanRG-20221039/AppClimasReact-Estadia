@@ -19,6 +19,7 @@ const UpdateWorkerRole = () => {
   const [permissionToDelete, setPermissionToDelete] = useState(null);
   const [profiles, setProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState('');
+  const [searchKey, setSearchKey] = useState(''); // State for search key
 
   // Fetch workers, roles, and buildings data on component mount
   useEffect(() => {
@@ -41,33 +42,36 @@ const UpdateWorkerRole = () => {
     fetchData();
   }, []);
 
-  // Handle worker selection change
-  const handleWorkerChange = async (e) => {
-    const selectedWorkerId = e.target.value;
-    const worker = workers.find(worker => worker.Id_clave_trabajador === parseInt(selectedWorkerId));
-    setSelectedWorker(selectedWorkerId);
-    setSelectedRole(worker ? worker.tipo_trabajador : '');
-    setSelectedProfile(worker ? worker.id_perfil : '');
+  // Handle worker search
+  const handleSearch = async () => {
+    const worker = workers.find(worker => worker.Clave_trabajador === searchKey);
+    if (worker) {
+      setSelectedWorker(worker.Id_clave_trabajador);
+      setSelectedRole(worker.tipo_trabajador);
+      setSelectedProfile(worker.id_perfil);
 
-    // Fetch permissions for the selected worker
-    try {
-      const permissionsResponse = await axios.get(`http://localhost:8000/permisos/trabajador/${selectedWorkerId}`);
-      const permissionsData = await Promise.all(permissionsResponse.data.map(async (perm) => {
-        const climaResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${perm.Id_clima}`);
-        const aulaResponse = await axios.get(`http://localhost:8000/aulas/${climaResponse.data.Id_aula}`);
-        const edificioResponse = await axios.get(`http://localhost:8000/edificios/${aulaResponse.data.Id_edificio}`);
+      // Fetch permissions for the selected worker
+      try {
+        const permissionsResponse = await axios.get(`http://localhost:8000/permisos/trabajador/${worker.Id_clave_trabajador}`);
+        const permissionsData = await Promise.all(permissionsResponse.data.map(async (perm) => {
+          const climaResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${perm.Id_clima}`);
+          const aulaResponse = await axios.get(`http://localhost:8000/aulas/${climaResponse.data.Id_aula}`);
+          const edificioResponse = await axios.get(`http://localhost:8000/edificios/${aulaResponse.data.Id_edificio}`);
 
-        return {
-          ...perm,
-          clima: climaResponse.data,
-          aula: aulaResponse.data,
-          edificio: edificioResponse.data,
-        };
-      }));
+          return {
+            ...perm,
+            clima: climaResponse.data,
+            aula: aulaResponse.data,
+            edificio: edificioResponse.data,
+          };
+        }));
 
-      setPermissions(permissionsData);
-    } catch (error) {
-      console.error('Error fetching permissions:', error);
+        setPermissions(permissionsData);
+      } catch (error) {
+        console.error('Error fetching permissions:', error);
+      }
+    } else {
+      alert('Trabajador no encontrado');
     }
   };
 
@@ -219,15 +223,22 @@ const UpdateWorkerRole = () => {
         <Row className="align-items-center">
           <Col md={4}>
             <Form.Group controlId="formWorker">
-              <Form.Label>Selecciona el Trabajador</Form.Label>
-              <Form.Control as="select" onChange={handleWorkerChange} value={selectedWorker}>
-                <option value="">Selecciona un trabajador</option>
-                {workers.map(worker => (
-                  <option key={worker.Id_clave_trabajador} value={worker.Id_clave_trabajador}>
-                    {worker.Clave_trabajador} - {worker.Nombre_del_trabajador}
-                  </option>
-                ))}
-              </Form.Control>
+              <Form.Label>Buscar Trabajador por Clave</Form.Label>
+              <Row>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="000"
+                    value={searchKey}
+                    onChange={(e) => setSearchKey(e.target.value)}
+                  />
+                </Col>
+                <Col>
+                  <Button variant="primary" className="w-100 botonC2" onClick={handleSearch}>
+                    Buscar
+                  </Button>
+                </Col>
+              </Row>
             </Form.Group>
           </Col>
           <Col md={4}>

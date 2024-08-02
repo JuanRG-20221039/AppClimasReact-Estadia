@@ -12,6 +12,7 @@
     margin-bottom: 150px;
     padding: 20px;
     border-radius: 8px;
+    width: 60% !important;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -23,4 +24,19 @@
 }
 .buttonS:hover{
     background-color: #1fb160!important;
+}
+
+.buttonC{
+    background-color: #7c7c7c!important;
+    border: none!important;
+    width: 200px;
+    height: 40px;
+    margin-left: 10px;
+}
+.buttonC:hover{
+    background-color: #aaaaaa!important;
+}
+
+.btnOcltar{
+    border-color: #e2e2e2 !important;
 }

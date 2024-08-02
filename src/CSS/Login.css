@@ -22,3 +22,7 @@
 .buttonS:hover{
     background-color: #1fb160!important;
 }
+
+.btnOcltar{
+    border-color: #e2e2e2 !important;
+}
