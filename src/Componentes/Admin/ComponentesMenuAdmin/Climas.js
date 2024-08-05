@@ -183,49 +183,61 @@ export default function Climas() {
 
   const handleDelete = async (id) => {
     try {
-      const ubicacionesCheckResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${id}`);
-  
-      if (ubicacionesCheckResponse.status === 200) {
-        alert('El clima está asignado en alguna ubicación, no se puede eliminar.');
-        return;
+      // Verifica si el clima está asignado en alguna ubicación
+      try {
+        const ubicacionesCheckResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/clima/${id}`);
+        if (ubicacionesCheckResponse.status === 200) {
+          alert('El clima está asignado en alguna ubicación, no se puede eliminar.');
+          return;
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          // Si no se encuentra la ubicación, continúa con la eliminación del clima
+        } else {
+          console.error('Error verificando ubicaciones del clima:', error);
+          return;
+        }
       }
-  
+    
       // Elimina los permisos relacionados con el clima
-      const deletePermisosResponse = await axios.delete(`http://localhost:8000/permisos/deleteAll/clima/${id}`);
-      if (deletePermisosResponse.status !== 200) {
-        console.error('Error al eliminar permisos:', deletePermisosResponse.data);
-        return;
+      try {
+        const deletePermisosResponse = await axios.delete(`http://localhost:8000/permisos/deleteAll/clima/${id}`);
+        if (deletePermisosResponse.status !== 200 && deletePermisosResponse.status !== 404) {
+          console.error('Error al eliminar permisos:', deletePermisosResponse.data);
+        }
+      } catch (error) {
+        if (error.response && error.response.status !== 404) {
+          console.error('Error al eliminar permisos:', error.response.data);
+          return;
+        }
       }
-  
+    
       // Elimina el historial de acceso relacionado con el clima
-      const deleteHistorialResponse = await axios.delete(`http://localhost:8000/historial-acceso/deleteAll/clima/${id}`);
-      if (deleteHistorialResponse.status !== 200) {
-        console.error('Error al eliminar historial de acceso:', deleteHistorialResponse.data);
-        return;
+      try {
+        const deleteHistorialResponse = await axios.delete(`http://localhost:8000/historial-acceso/deleteAll/clima/${id}`);
+        if (deleteHistorialResponse.status !== 200 && deleteHistorialResponse.status !== 404) {
+          console.error('Error al eliminar historial de acceso:', deleteHistorialResponse.data);
+        }
+      } catch (error) {
+        if (error.response && error.response.status !== 404) {
+          console.error('Error al eliminar historial de acceso:', error.response.data);
+          return;
+        }
       }
-  
+    
       // Elimina el clima
-      const deleteClimaResponse = await axios.delete(`http://localhost:8000/climas/${id}`);
-      if (deleteClimaResponse.status === 200) {
-        setClimas(climas.filter(clima => clima.Id_clima !== id));
-      } else {
-        console.error('Error al eliminar clima:', deleteClimaResponse.data);
+      try {
+        const deleteClimaResponse = await axios.delete(`http://localhost:8000/climas/${id}`);
+        if (deleteClimaResponse.status === 200) {
+          setClimas(climas.filter(clima => clima.Id_clima !== id));
+        } else {
+          console.error('Error al eliminar clima:', deleteClimaResponse.data);
+        }
+      } catch (error) {
+        console.error('Error eliminando clima:', error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        try {
-          const deleteResponse = await axios.delete(`http://localhost:8000/climas/${id}`);
-          if (deleteResponse.status === 200) {
-            setClimas(climas.filter(clima => clima.Id_clima !== id));
-          } else {
-            console.error('Error al eliminar clima:', deleteResponse.data);
-          }
-        } catch (deleteError) {
-          console.error('Error eliminando clima:', deleteError);
-        }
-      } else {
-        console.error('Error verificando ubicaciones del clima:', error);
-      }
+      console.error('Error general en la operación:', error);
     }
   };  
 

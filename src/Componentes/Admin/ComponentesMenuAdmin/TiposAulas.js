@@ -76,7 +76,7 @@ export default function TiposAulas() {
       setTiposAulas(tiposAulas.filter(tipo => tipo.Id_tipo_aula !== id));
     } catch (error) {
       console.error('Error deleting tipo de aula:', error);
-      alert('Error al eliminar el tipo de aula. Por favor, inténtelo de nuevo más tarde.');
+      alert('No se puede elimnar el tipo de aula por que hay aulas asignadas con ese tipo');
     }
   };
 

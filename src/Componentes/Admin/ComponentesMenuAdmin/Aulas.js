@@ -10,8 +10,10 @@ export default function Aulas() {
   const [tiposAula, setTiposAula] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false); // Modal de confirmación
   const [currentAula, setCurrentAula] = useState({ Id_aula: '', Nombre_aula: '', Id_edificio: '', Id_tipo_aula: '' });
   const [newAula, setNewAula] = useState({ Nombre_aula: '', Id_edificio: '', Id_tipo_aula: '' });
+  const [aulaToDelete, setAulaToDelete] = useState(null); // ID del aula a eliminar
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,24 +42,36 @@ export default function Aulas() {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!aulaToDelete) return;
+    
     try {
       // Consulta para verificar si hay reportes asociados al aula
-      const reportesResponse = await axios.get(`http://localhost:8000/reportes/aula/${id}`);
+      const reportesResponse = await axios.get(`http://localhost:8000/reportes/aula/${aulaToDelete}`);
       if (reportesResponse.data && reportesResponse.data.length > 0) {
-        alert('No se puede eliminar el aula porque tiene reportes asociados.');
-        return;
+        // Elimina los reportes asociados
+        await axios.delete(`http://localhost:8000/reportes/aula/${aulaToDelete}`);
       }
     } catch (error) {
       if (error.response && error.response.status !== 404) {
-        console.error('Error fetching reportes:', error);
+        console.error('Error fetching or deleting reportes:', error);
         return;
       }
     }
-
+  
+    try {
+      // Elimina los horarios asociados al aula
+      await axios.delete(`http://localhost:8000/horarios/aula/${aulaToDelete}`);
+    } catch (error) {
+      if (error.response && error.response.status !== 404) {
+        console.error('Error deleting horarios:', error);
+        return;
+      }
+    }
+  
     try {
       // Consulta para verificar si hay ubicaciones climáticas asociadas al aula
-      const ubicacionesResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/aula/${id}`);
+      const ubicacionesResponse = await axios.get(`http://localhost:8000/ubicaciones-climas/aula/${aulaToDelete}`);
       if (ubicacionesResponse.data && ubicacionesResponse.data.length > 0) {
         alert('No se puede eliminar el aula porque tiene ubicaciones climáticas asociadas.');
         return;
@@ -68,11 +82,12 @@ export default function Aulas() {
         return;
       }
     }
-
+  
     try {
-      // Si no hay reportes ni ubicaciones climáticas asociadas, elimina el aula
-      await axios.delete(`http://localhost:8000/aulas/${id}`);
-      setAulas(aulas.filter(aula => aula.Id_aula !== id));
+      // Si no hay reportes, horarios ni ubicaciones climáticas asociadas, elimina el aula
+      await axios.delete(`http://localhost:8000/aulas/${aulaToDelete}`);
+      setAulas(aulas.filter(aula => aula.Id_aula !== aulaToDelete));
+      setShowConfirmDeleteModal(false);
     } catch (deleteError) {
       if (deleteError.response && deleteError.response.status === 500) {
         alert('Error al eliminar el aula. Por favor, inténtelo de nuevo más tarde.');
@@ -168,7 +183,15 @@ export default function Aulas() {
               <td>{getTipoAulaNombre(aula.Id_tipo_aula)}</td>
               <td>
                 <button className="btn btn-success botonS" onClick={() => handleEdit(aula)}>Editar</button>
-                <button className="btn btn-danger botonD" onClick={() => handleDelete(aula.Id_aula)}>Eliminar</button>
+                <button 
+                  className="btn btn-danger botonD"
+                  onClick={() => {
+                    setAulaToDelete(aula.Id_aula);
+                    setShowConfirmDeleteModal(true);
+                  }}
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           ))}
@@ -283,6 +306,25 @@ export default function Aulas() {
           </Button>
           <Button variant="primary botonM botonMS" onClick={handleCreateAula}>
             Crear Aula
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal show={showConfirmDeleteModal} onHide={() => setShowConfirmDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Está seguro de que desea eliminar este aula?</p>
+          <p>Se eliminaran los reportes y horarios asociados</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary botonM botonMCC" onClick={() => setShowConfirmDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger botonM botonMC" onClick={handleDelete}>
+            Eliminar
           </Button>
         </Modal.Footer>
       </Modal>
