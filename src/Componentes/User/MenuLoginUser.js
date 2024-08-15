@@ -137,7 +137,7 @@ export default function MenuLogin({ idClaveTrabajador }) {
           .then(() => {
             // Horario válido, procede a encender o apagar el clima
             if (idPlacaPrincipal) {
-              axios.put(`http://localhost:8000/iot/${idPlacaPrincipal}`, { Estado_clima: newState })
+              axios.put(`http://localhost:8000/iot/estado_clima/${idPlacaPrincipal}`, { Estado_clima: newState })
                 .then(() => {
                   setIsClimaOn(!isClimaOn);
                   const accionRealizada = newState === 1 ? 'ENCENDIDO' : 'APAGADO';

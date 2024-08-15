@@ -6,13 +6,12 @@ import '../../../CSS/StyleGeneralAdmin.css';
 
 const CodigosClimaTable = () => {
     const [codigos, setCodigos] = useState([]);
+    const [marcas, setMarcas] = useState([]);
     const [showCrearModal, setShowCrearModal] = useState(false);
     const [showEditarModal, setShowEditarModal] = useState(false);
-    const [showEliminarModal, setShowEliminarModal] = useState(false); // Estado para controlar el modal de eliminación
+    const [showEliminarModal, setShowEliminarModal] = useState(false);
     const [codigoSeleccionado, setCodigoSeleccionado] = useState(null);
-    const [nombreCodigo, setNombreCodigo] = useState('');
-    const [codigoOn, setCodigoOn] = useState('');
-    const [codigoOff, setCodigoOff] = useState('');
+    const [idMarca, setIdMarca] = useState('');
 
     useEffect(() => {
         const fetchCodigos = async () => {
@@ -24,25 +23,53 @@ const CodigosClimaTable = () => {
             }
         };
 
+        const fetchMarcas = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/marcas');
+                setMarcas(response.data);
+            } catch (error) {
+                console.error('Error al cargar las marcas:', error);
+            }
+        };
+
         fetchCodigos();
+        fetchMarcas();
         const interval = setInterval(fetchCodigos, 1000);
 
         return () => clearInterval(interval);
     }, []);
 
+    const generarClave = async () => {
+        let claveGenerada;
+        let claveDisponible = false;
+
+        while (!claveDisponible) {
+            claveGenerada = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+            try {
+                const response = await axios.get(`http://localhost:8000/codigosClima/clave/${claveGenerada}`);
+                if (response.status === 200) {
+                    // Si la clave ya existe, generamos una nueva
+                    continue;
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    // Si el error es 404, la clave está disponible
+                    claveDisponible = true;
+                }
+            }
+        }
+        return claveGenerada;
+    };
+
     const abrirModalEditar = (codigo) => {
         setCodigoSeleccionado(codigo);
-        setNombreCodigo(codigo.Nombre_codigo);
-        setCodigoOn(codigo.Codigo_on);
-        setCodigoOff(codigo.Codigo_off);
+        setIdMarca(codigo.Id_marca);
         setShowEditarModal(true);
     };
 
     const cerrarModalEditar = () => {
         setCodigoSeleccionado(null);
-        setNombreCodigo('');
-        setCodigoOn('');
-        setCodigoOff('');
+        setIdMarca('');
         setShowEditarModal(false);
     };
 
@@ -51,7 +78,7 @@ const CodigosClimaTable = () => {
             await axios.delete(`http://localhost:8000/codigosClima/${id}`);
             const response = await axios.get('http://localhost:8000/codigosClima');
             setCodigos(response.data);
-            setShowEliminarModal(false); // Cerrar modal de eliminación después de eliminar
+            setShowEliminarModal(false);
         } catch (error) {
             console.error('Error al eliminar código:', error);
         }
@@ -60,9 +87,8 @@ const CodigosClimaTable = () => {
     const handleGuardarCambios = async () => {
         try {
             await axios.put(`http://localhost:8000/codigosClima/${codigoSeleccionado.Id_codigo}`, {
-                Nombre_codigo: nombreCodigo,
-                Codigo_on: codigoOn,
-                Codigo_off: codigoOff
+                Id_marca: idMarca,
+                Clave: codigoSeleccionado.Clave // No se debe cambiar el campo Clave ya que es generado automáticamente
             });
             const response = await axios.get('http://localhost:8000/codigosClima');
             setCodigos(response.data);
@@ -74,17 +100,29 @@ const CodigosClimaTable = () => {
 
     const handleCrearCodigo = async () => {
         try {
+            // Validar si la marca ya tiene un código registrado
+            try {
+                const response = await axios.get(`http://localhost:8000/codigosClima/marca/${idMarca}`);
+                if (response.status === 200) {
+                    alert('Esta marca ya tiene un código registrado');
+                    return;
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    // Marca no tiene código registrado, continuar
+                }
+            }
+
+            // Crear el código con una clave generada
+            const clave = await generarClave();
             await axios.post('http://localhost:8000/codigosClima', {
-                Nombre_codigo: nombreCodigo,
-                Codigo_on: codigoOn,
-                Codigo_off: codigoOff
+                Id_marca: idMarca,
+                Clave: clave
             });
             const response = await axios.get('http://localhost:8000/codigosClima');
             setCodigos(response.data);
             setShowCrearModal(false);
-            setNombreCodigo('');
-            setCodigoOn('');
-            setCodigoOff('');
+            setIdMarca('');
         } catch (error) {
             console.error('Error al crear código:', error);
         }
@@ -100,6 +138,11 @@ const CodigosClimaTable = () => {
         setShowEliminarModal(false);
     };
 
+    const obtenerNombreMarca = (id) => {
+        const marca = marcas.find(m => m.Id_marca === id);
+        return marca ? marca.Nombre_marca : 'Desconocida';
+    };
+
     return (
         <div>
             <h2 className='tituloComponente'>Códigos para el control de Climas</h2>
@@ -108,14 +151,16 @@ const CodigosClimaTable = () => {
             <table className="table mt-3">
                 <thead>
                     <tr>
-                        <th>Nombre del Código</th>
+                        <th>Marca</th>
+                        <th>Clave</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {codigos.map(codigo => (
                         <tr key={codigo.Id_codigo}>
-                            <td>{codigo.Nombre_codigo}</td>
+                            <td>{obtenerNombreMarca(codigo.Id_marca)}</td>
+                            <td>{codigo.Clave}</td>
                             <td>
                                 <Button variant="info botonS" onClick={() => abrirModalEditar(codigo)}>Editar</Button>
                                 <Button variant="danger botonD" onClick={() => abrirModalEliminar(codigo)}>Eliminar</Button>
@@ -132,17 +177,20 @@ const CodigosClimaTable = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group controlId="formNombreCodigoEditar">
-                            <Form.Label>Nombre del Código</Form.Label>
-                            <Form.Control type="text" value={nombreCodigo} onChange={(e) => setNombreCodigo(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group controlId="formCodigoOnEditar">
-                            <Form.Label>Código de Encendido</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={codigoOn} onChange={(e) => setCodigoOn(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group controlId="formCodigoOffEditar">
-                            <Form.Label>Código de Apagado</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={codigoOff} onChange={(e) => setCodigoOff(e.target.value)} />
+                        <Form.Group controlId="formMarcaEditar">
+                            <Form.Label>Marca</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={idMarca}
+                                onChange={(e) => setIdMarca(e.target.value)}
+                            >
+                                <option value="">Selecciona una marca</option>
+                                {marcas.map(marca => (
+                                    <option key={marca.Id_marca} value={marca.Id_marca}>
+                                        {marca.Nombre_marca}
+                                    </option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -163,17 +211,20 @@ const CodigosClimaTable = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group controlId="formNombreCodigoCrear">
-                            <Form.Label>Nombre del Código</Form.Label>
-                            <Form.Control type="text" value={nombreCodigo} onChange={(e) => setNombreCodigo(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group controlId="formCodigoOnCrear">
-                            <Form.Label>Código de Encendido</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={codigoOn} onChange={(e) => setCodigoOn(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group controlId="formCodigoOffCrear">
-                            <Form.Label>Código de Apagado</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={codigoOff} onChange={(e) => setCodigoOff(e.target.value)} />
+                        <Form.Group controlId="formMarcaCrear">
+                            <Form.Label>Marca</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={idMarca}
+                                onChange={(e) => setIdMarca(e.target.value)}
+                            >
+                                <option value="">Selecciona una marca</option>
+                                {marcas.map(marca => (
+                                    <option key={marca.Id_marca} value={marca.Id_marca}>
+                                        {marca.Nombre_marca}
+                                    </option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -181,7 +232,7 @@ const CodigosClimaTable = () => {
                     <Button variant="secondary botonM botonMCC" onClick={() => setShowCrearModal(false)}>
                         Cancelar
                     </Button>
-                    <Button variant="primary botonM botonMC" onClick={handleCrearCodigo}>
+                    <Button variant="primary botonM botonMS" onClick={handleCrearCodigo}>
                         Crear Código
                     </Button>
                 </Modal.Footer>
